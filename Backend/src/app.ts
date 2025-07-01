@@ -1,6 +1,5 @@
-import { Console } from 'console'
-import express,{Application,Request,Response} from 'express'
-
+import express, { Application, Request, Response } from 'express'
+require("./model/index")
 const  app:Application = express()
 const  PORT = 3000
 

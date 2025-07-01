@@ -3,7 +3,7 @@ host: string,
 user: string,
 password: string,
 db: string,
-dialect: 'mysql' | 'postgresql' | 'sqlite',
+dialect: 'mysql' | 'postgres' | 'sqlite',
 pool:{
 max: number,
 min: number,
