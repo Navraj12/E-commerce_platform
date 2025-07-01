@@ -3,9 +3,8 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "start": "npx tsc && node build/app.js"
+        "start": "nodemon"
     },
-
     "keywords": [],
     "author": "",
     "license": "ISC",
@@ -13,13 +12,16 @@
     "dependencies": {
         "express": "^5.1.0",
         "mysql2": "^3.14.1",
-        "nodemon": "^3.1.10",
-        "sequelize": "^6.37.7"
+        "sequelize": "^6.37.7",
+        "tsc-node": "^0.0.3"
     },
     "devDependencies": {
         "@types/express": "^5.0.3",
         "@types/node": "^24.0.4",
         "@types/sequelize": "^4.28.20",
+        "nodemon": "^3.1.10",
+        "rimraf": "^6.0.1",
+        "ts-node": "^10.9.2",
         "typescript": "^5.8.3"
     }
 }
