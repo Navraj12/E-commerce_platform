@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import express, { Application } from 'express';
+import adminSeeder from './adminseeder';
 import './database/connection';
 import userRoute from './routes/userRoute';
 // import './model/index';
@@ -17,6 +18,10 @@ const PORT = process.env.PORT || 3000;
 //   res.send('About Page');
 // });
 app.use(express.json())
+
+//admin seeder
+adminSeeder()
+
 app.use("/",userRoute)
 
 app.listen(PORT, () => {
