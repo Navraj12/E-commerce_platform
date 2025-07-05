@@ -19,10 +19,10 @@ password:'',
 db:'project2database',
 dialect:'mysql',
 pool:{
-idle:10000,
-max:5,
+idle:1,
+max:2,
 min:0,
-acquire:10000
+acquire:1
 }
 }
 
