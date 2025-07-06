@@ -1,8 +1,8 @@
-import dotenv from 'dotenv';
-import express, { Application } from 'express';
-import adminSeeder from './adminseeder';
-import './database/connection';
-import userRoute from './routes/userRoute';
+import dotenv from "dotenv";
+import express, { Application } from "express";
+import adminSeeder from "./adminseeder";
+import "./database/connection";
+import userRoute from "./routes/userRoute";
 // import './model/index';
 
 dotenv.config();
@@ -17,13 +17,13 @@ const PORT = process.env.PORT || 3000;
 // app.get('/about', (req: Request, res: Response) => {
 //   res.send('About Page');
 // });
-app.use(express.json())
+app.use(express.json());
 
 //admin seeder
-adminSeeder()
+adminSeeder();
 
-app.use("/",userRoute)
+app.use("/", userRoute);
 
 app.listen(PORT, () => {
-  console.log('server is running on port', PORT);
+  console.log("server is running on port", PORT);
 });
