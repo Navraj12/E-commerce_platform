@@ -84,5 +84,6 @@ class AuthMiddleware {
     };
   }
 }
-
-export default new AuthMiddleware();
+export default new AuthMiddleware(); // default export
+export { Role }; // named export ✅
+// Export types for use in other files

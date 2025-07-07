@@ -3,7 +3,7 @@ import express, { Application } from "express";
 import "./database/connection";
 import userRoute from "./routes/userRoute";
 // import './model/index';
-
+import productRoute from "./routes/productRoute";
 dotenv.config();
 
 const app: Application = express();
@@ -22,6 +22,7 @@ app.use(express.json());
 // adminSeeder();
 
 app.use("/", userRoute);
+app.use("admin/product", productRoute);
 
 app.listen(PORT, () => {
   console.log("server is running on port", PORT);

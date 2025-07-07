@@ -1,0 +1,20 @@
+import express, { RequestHandler, Router } from "express";
+import productController from "../controllers/productController";
+import authMiddleware, { Role } from "../middleware/authMiddleware";
+
+// import Role from "../middleware/authMiddleware";
+import { multer, storage } from "../middleware/multerMiddleware";
+
+const upload = multer({ storage: storage });
+const router: Router = express.Router();
+
+router
+  .route("/")
+  .post(
+    authMiddleware.isAuthenticated as RequestHandler,
+    authMiddleware.restictTo(Role.Admin) as RequestHandler,
+    upload.single("image"),
+    productController.addProduct
+  );
+
+export default router;
