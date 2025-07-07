@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import User from "./database/models/userModel";
+import User from "./database/models/User";
 
 const adminSeeder = async (): Promise<void> => {
   const [data] = await User.findAll({

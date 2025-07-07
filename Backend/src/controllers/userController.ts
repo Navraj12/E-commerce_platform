@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import Jwt from "jsonwebtoken";
-import User from "../database/models/userModel";
+import User from "../database/models/User";
 
 /* The AuthController class in TypeScript provides a method to register a user with validation checks and password hashing. */
 class AuthController {

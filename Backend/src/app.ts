@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import express, { Application } from "express";
-import adminSeeder from "./adminseeder";
 import "./database/connection";
 import userRoute from "./routes/userRoute";
 // import './model/index';
@@ -20,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 //admin seeder
-adminSeeder();
+// adminSeeder();
 
 app.use("/", userRoute);
 

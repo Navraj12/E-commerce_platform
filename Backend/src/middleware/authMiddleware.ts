@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import User from "../database/models/userModel";
+import User from "../database/models/User";
 
 interface AuthRequest extends Request {
   user?: {
     username: string;
     email: string;
-    // role: string;
+    role: string;
     password: string;
     id: string;
   };
@@ -15,9 +15,14 @@ interface AuthRequest extends Request {
 interface DecodedToken {
   username: string;
   email: string;
-  // role: string;
+  role: string;
   password: string;
   id: string;
+}
+
+enum Role {
+  Admin = "admin",
+  Customer = "customer",
 }
 
 class AuthMiddleware {
@@ -65,6 +70,19 @@ class AuthMiddleware {
       }
     );
   }
+
+  restictTo(...roles: Role[]) {
+    return (req: AuthRequest, res: Response, next: NextFunction) => {
+      let userRole = req.user?.role as Role;
+      if (!roles.includes(userRole)) {
+        return res.status(403).json({
+          message: "You do not have permission to perform this action",
+        });
+      } else {
+        next();
+      }
+    };
+  }
 }
 
-export default AuthMiddleware;
+export default new AuthMiddleware();

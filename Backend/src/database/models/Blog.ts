@@ -14,6 +14,10 @@ class Blog extends Model {
     type: DataType.STRING,
   })
   declare title: string;
+  @Column({
+    type: DataType.STRING,
+  })
+  declare title2: string;
 }
 
 export default Blog;

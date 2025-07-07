@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 
 import dotenv from "dotenv";
+import path from "path";
 dotenv.config();
 
 const sequelize = new Sequelize({
@@ -10,8 +11,9 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD,
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
-  models: [__dirname + "/models"],
+models: [path.join(__dirname, "models/")]
 });
+
 sequelize
   .authenticate()
   .then(() => {
