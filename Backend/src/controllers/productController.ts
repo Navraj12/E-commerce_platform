@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import Product from "../database/models/Product";
 
-
 class ProductController {
   async addProduct(req: Request, res: Response): Promise<void> {
     const {
@@ -32,7 +31,7 @@ class ProductController {
       productDescription,
       productPrice,
       productTotalStockQty,
-      imageUrl: fileName,
+      productImageUrl: fileName,
     });
     res.status(200).json({
       message: "Product added successfully",
