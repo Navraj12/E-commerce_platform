@@ -15,6 +15,7 @@ router
     authMiddleware.restictTo(Role.Admin) as RequestHandler,
     upload.single("productImageUrl"),
     productController.addProduct
-  );
+  )
+  .get(productController.getAllProducts);
 
 export default router;

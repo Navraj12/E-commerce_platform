@@ -1,5 +1,7 @@
 import { Response } from "express";
+import Category from "../database/models/Category";
 import Product from "../database/models/Product";
+import User from "../database/models/User";
 import { AuthRequest } from "../middleware/authMiddleware";
 
 class ProductController {
@@ -46,6 +48,24 @@ class ProductController {
     });
     res.status(200).json({
       message: "Product added successfully",
+    });
+  }
+
+  async getAllProducts(req: AuthRequest, res: Response): Promise<void> {
+    const data = await Product.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ["username", "email"],
+        },
+        {
+          model: Category,
+        },
+      ],
+    });
+    res.status(200).json({
+      message: "Products fetched successfully",
+      data,
     });
   }
 }
