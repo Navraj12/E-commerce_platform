@@ -19,7 +19,7 @@ class User extends Model {
 
   @Column({
     type: DataType.ENUM("customer", "admin"),
-    defaultValue: "customer",
+    // defaultValue: "customer",
   })
   declare role: string;
 

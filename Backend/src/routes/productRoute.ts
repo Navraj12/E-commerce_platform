@@ -13,7 +13,7 @@ router
   .post(
     authMiddleware.isAuthenticated as RequestHandler,
     authMiddleware.restictTo(Role.Admin) as RequestHandler,
-    upload.single("image"),
+    upload.single("productImageUrl"),
     productController.addProduct
   );
 
