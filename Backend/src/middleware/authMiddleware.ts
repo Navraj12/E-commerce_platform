@@ -71,7 +71,7 @@ class AuthMiddleware {
     );
   }
 
-  restictTo(...roles: Role[]) {
+  restrictTo(...roles: Role[]) {
     return (req: AuthRequest, res: Response, next: NextFunction) => {
       let userRole = req.user?.role as Role;
       if (!roles.includes(userRole)) {

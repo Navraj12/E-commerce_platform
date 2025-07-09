@@ -6,6 +6,7 @@ import userRoute from "./routes/userRoute";
 import adminSeeder from "./adminseeder";
 import categoryController from "./controllers/categoryController";
 import productRoute from "./routes/productRoute";
+import CategoryRoute from "./routes/categoryRoute";
 dotenv.config();
 
 const app: Application = express();
@@ -25,6 +26,7 @@ adminSeeder();
 
 app.use("/", userRoute);
 app.use("/admin/product", productRoute);
+app.use("/admin/category",CategoryRoute)
 
 app.listen(PORT, () => {
   categoryController.seedCategory();

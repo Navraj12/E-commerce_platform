@@ -12,10 +12,19 @@ router
   .route("/")
   .post(
     authMiddleware.isAuthenticated as RequestHandler,
-    authMiddleware.restictTo(Role.Admin) as RequestHandler,
+    authMiddleware.restrictTo(Role.Admin) as RequestHandler,
     upload.single("productImageUrl"),
     productController.addProduct
   )
   .get(productController.getAllProducts);
+
+router
+  .route("/:id")
+  .get(productController.getSingleProduct)
+  .delete(
+    authMiddleware.isAuthenticated as RequestHandler,
+    authMiddleware.restrictTo(Role.Admin) as RequestHandler,
+    productController.deleteProduct
+  );
 
 export default router;
