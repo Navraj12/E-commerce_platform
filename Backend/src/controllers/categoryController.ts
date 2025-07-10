@@ -36,6 +36,7 @@ class CategoryController {
     await Category.create({
       categoryName,
     });
+
     res.status(200).json({
       message: "Category added successfully",
     });
