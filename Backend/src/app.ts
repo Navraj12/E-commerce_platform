@@ -5,8 +5,9 @@ import userRoute from "./routes/userRoute";
 // import './model/index';
 import adminSeeder from "./adminseeder";
 import categoryController from "./controllers/categoryController";
-import productRoute from "./routes/productRoute";
+import cartRoute from "./routes/cartRoute";
 import CategoryRoute from "./routes/categoryRoute";
+import productRoute from "./routes/productRoute";
 dotenv.config();
 
 const app: Application = express();
@@ -22,13 +23,14 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 //admin seeder
-adminSeeder();
+// adminSeeder();
 
 app.use("/", userRoute);
 app.use("/admin/product", productRoute);
-app.use("/admin/category",CategoryRoute)
+app.use("/admin/category", CategoryRoute);
+app.use("/customer/cart", cartRoute);
 
 app.listen(PORT, () => {
-  categoryController.seedCategory();
+  // categoryController.seedCategory();
   console.log("server is running on port", PORT);
 });

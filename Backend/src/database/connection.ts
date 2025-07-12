@@ -2,6 +2,7 @@ import { Sequelize } from "sequelize-typescript";
 
 import dotenv from "dotenv";
 import path from "path";
+import Cart from "./models/Cart";
 import Category from "./models/Category";
 import Product from "./models/Product";
 import User from "./models/User";
@@ -31,9 +32,19 @@ sequelize.sync({ force: false }).then(() => {
 });
 
 //Relationships
+//User product relation
 User.hasMany(Product, { foreignKey: "userId" });
 Product.belongsTo(User, { foreignKey: "userId" });
+
+//Product category relation
 Product.belongsTo(Category, { foreignKey: "categoryId" });
 Category.hasOne(Product, { foreignKey: "categoryId" });
 
+//User cart relation
+User.hasMany(Cart, { foreignKey: "userId" });
+Cart.belongsTo(User, { foreignKey: "userId" });
+
+//cart product relation
+Product.hasMany(Cart, { foreignKey: "productId" });
+Cart.belongsTo(Product, { foreignKey: "productId" });
 export default sequelize;
