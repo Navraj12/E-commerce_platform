@@ -15,7 +15,7 @@ export interface OrderDetails {
   productId: string;
 }
 
-enum PaymentMethod {
+export enum PaymentMethod {
   Cod = "cod",
   Khalti = "khalti",
 }
