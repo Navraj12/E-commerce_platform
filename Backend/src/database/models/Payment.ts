@@ -21,6 +21,7 @@ class Payment extends Model {
   @Column({
     type: DataType.ENUM("pending", "paid", "unpaid"),
     allowNull: false,
+    defaultValue: "pending",
   })
   declare paymentStatus: string;
 

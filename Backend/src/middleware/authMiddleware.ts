@@ -52,7 +52,7 @@ class AuthMiddleware {
           //check if that decoded object id user exist or not
           try {
             const decodedToken = decoded as DecodedToken;
-            console.log("decodedToken", decodedToken);
+            // console.log("decodedToken", decodedToken);
             const userData = await User.findByPk(decodedToken.id);
             if (!userData) {
               res.status(404).json({
@@ -61,8 +61,8 @@ class AuthMiddleware {
               return;
             }
             req.user = userData;
-            console.log("useratatat", userData);
-            console.log("id", userData.id);
+            // console.log("useratatat", userData);
+            // console.log("id", userData.id);
             next();
           } catch (error) {
             res.status(500).json({

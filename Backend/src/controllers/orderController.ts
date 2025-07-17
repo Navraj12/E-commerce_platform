@@ -16,6 +16,7 @@ class OrderController {
       PaymentDetails,
       items,
     }: OrderData = req.body;
+    // console.log( PaymentDetails.paymentMethod);
     if (
       !phoneNumber ||
       !shippingAddress ||
@@ -30,17 +31,19 @@ class OrderController {
       });
       return;
     }
-    
+
     const paymentData = await Payment.create({
       paymentMethod: PaymentDetails.paymentMethod,
     });
-const orderData = await Order.create({
+    // console.log(paymentData);
+    const orderData = await Order.create({
       phoneNumber,
       shippingAddress,
       totalAmount,
       userId,
-paymentId :paymentData.id
+      paymentId: paymentData.id,
     });
+    // console.log("something", orderData);
 
     for (var i = 0; i < items.length; i++) {
       await OrderDetail.create({
@@ -74,6 +77,7 @@ paymentId :paymentData.id
         message: "order placed successfully",
         url: KhaltiResponse.payment_url,
       });
+      // console.log(url);
     } else {
       res.status(200).json({
         message: "order placed successfully",

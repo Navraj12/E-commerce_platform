@@ -1,7 +1,8 @@
+import { Router } from "express";
 import orderController from "../controllers/orderController";
 import authMiddleware from "../middleware/authMiddleware";
 import errorHandler from "../services/catchAsyncError";
-import router from "./userRoute";
+const router = Router();
 
 router
   .route("/")
