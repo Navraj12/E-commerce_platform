@@ -1,6 +1,6 @@
-import { Router } from "express";
+import { RequestHandler, Router } from "express";
 import orderController from "../controllers/orderController";
-import authMiddleware from "../middleware/authMiddleware";
+import authMiddleware, { Role } from "../middleware/authMiddleware";
 import errorHandler from "../services/catchAsyncError";
 const router = Router();
 
@@ -25,7 +25,8 @@ router
 router
   .route("/customer/:id")
   .patch(
-    authMiddleware.isAuthenticated,
+    authMiddleware.isAuthenticated as RequestHandler,
+    authMiddleware.restrictTo(Role.Customer) as RequestHandler,
     errorHandler(orderController.cancelMyOrder)
   )
   .get(
