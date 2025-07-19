@@ -19,7 +19,7 @@ export enum PaymentMethod {
   Cod = "cod",
   Khalti = "khalti",
 }
-enum PaymentStatus {
+export enum PaymentStatus {
   paid = "paid",
   Unpaid = "unpaid",
 }
