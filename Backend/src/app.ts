@@ -3,12 +3,10 @@ import express, { Application } from "express";
 import "./database/connection";
 import userRoute from "./routes/userRoute";
 // import './model/index';
-import adminSeeder from "./adminseeder";
-import categoryController from "./controllers/categoryController";
 import cartRoute from "./routes/cartRoute";
 import CategoryRoute from "./routes/categoryRoute";
+import orderRoute from "./routes/orderRoute";
 import productRoute from "./routes/productRoute";
-import orderRoute from "./routes/orderRoute"
 dotenv.config();
 
 const app: Application = express();
@@ -30,7 +28,7 @@ app.use("/", userRoute);
 app.use("/admin/product", productRoute);
 app.use("/admin/category", CategoryRoute);
 app.use("/customer/cart", cartRoute);
-app.use("/customer/order",orderRoute)
+app.use("/order", orderRoute);
 
 app.listen(PORT, () => {
   // categoryController.seedCategory();

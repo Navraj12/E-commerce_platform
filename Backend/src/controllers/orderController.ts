@@ -14,7 +14,6 @@ import {
   TransactionStatus,
   TransactionVerificationResponse,
 } from "../types/orderTypes";
-import { where } from "sequelize";
 
 class ExtendedOrder extends Order {
   declare paymentId: string | null;
@@ -269,37 +268,36 @@ class OrderController {
     });
   }
 
-async deleteOrder(req:Request,res:Response):Promise<void>{
-const orderId= req.params.id 
-const order = await Order.findByPk(orderId)
-const extendedOrder : ExtendedOrder = order as ExtendedOrder
-if(order){
-await Order.destroy ({
-where:{
-id:orderId
-}
-})
-await OrderDetail.destroy({
-where:{
-orderId:orderId
-}
-})
-await Payment.destroy({
-where:{
-id: extendedOrder.paymentId
-}
-})
-res.status(200).json({
-message:'Order deleted successfully'
-})
-}
-else{
-res.status(404).json({
-message:"No order with that orderId"
-})
-}
-}
+  async deleteOrder(req: Request, res: Response): Promise<void> {
+    const orderId = req.params.id;
+    const order = await Order.findByPk(orderId);
+    const extendedOrder: ExtendedOrder = order as ExtendedOrder;
+    if (order) {
+      await OrderDetail.destroy({
+        where: {
+          orderId: orderId,
+        },
+      });
+      await Payment.destroy({
+        where: {
+          id: extendedOrder.paymentId,
+        },
+      });
+      await Order.destroy({
+        where: {
+          id: orderId,
+        },
+      });
 
+      res.status(200).json({
+        message: "Order deleted successfully",
+      });
+    } else {
+      res.status(404).json({
+        message: "No order with that orderId",
+      });
+    }
+  }
 }
 
 export default new OrderController();

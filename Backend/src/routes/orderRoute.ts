@@ -18,7 +18,7 @@ router
   );
 router
   .route("/customer/")
-  .post(
+  .get(
     authMiddleware.isAuthenticated,
     errorHandler(orderController.fetchMyOrders)
   );
