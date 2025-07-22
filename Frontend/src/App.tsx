@@ -1,10 +1,13 @@
-// import { useState } from "react";
 import "./App.css";
 
 function App() {
-  // const [count, setCount] = useState(0);
-
-  return <></>;
+  return (
+    <>
+      <h1 className="bg-amber-500 forced-color-adjust-auto">
+        Hello guys welcome to my e_commerce{" "}
+      </h1>
+    </>
+  );
 }
 
 export default App;
