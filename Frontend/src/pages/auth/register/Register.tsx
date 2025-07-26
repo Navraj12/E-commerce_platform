@@ -1,10 +1,11 @@
+import Form from "../Form";
 
 const Register = () => {
   return (
-    <div>
-      
-    </div>
-  )
-}
+    <>
+      <Form />
+    </>
+  );
+};
 
-export default Register
+export default Register;

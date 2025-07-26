@@ -1,10 +1,10 @@
-
+import Form from "../Form";
 const Login = () => {
   return (
-    <div>
-      
-    </div>
-  )
-}
+    <>
+      <Form />
+    </>
+  );
+};
 
-export default Login
+export default Login;
