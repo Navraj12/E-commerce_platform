@@ -1,10 +1,7 @@
 import Form from "../Form";
-const Login = () => {
-  return (
-    <>
-      <Form />
-    </>
-  );
+
+const LoginPage = () => {
+  return <Form isRegister={false} />;
 };
 
-export default Login;
+export default LoginPage;
