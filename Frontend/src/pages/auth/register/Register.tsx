@@ -1,7 +1,7 @@
 import Form from "../Form";
 
-const RegisterPage = () => {
+const Register = () => {
   return <Form isRegister={true} />;
 };
 
-export default RegisterPage;
+export default Register;

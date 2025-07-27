@@ -188,16 +188,6 @@ const Form: React.FC<FormProps> = ({ isRegister = false }) => {
                 </a>
               </div>
             </div>
-
-            <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-              Powered by
-              <a
-                href="javascript:void(0)"
-                className="font-medium text-blue-600 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300"
-              >
-                Tailkit
-              </a>
-            </div>
           </section>
         </div>
       </main>
