@@ -1,10 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
+import API from "../http";
+
+interface RegisterData {
+  username: string;
+  email: string;
+  password: string;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
 
 interface User {
   username: string;
   email: string;
   password: string;
+  token: string;
 }
 
 interface AuthState {
@@ -32,3 +46,37 @@ const authSlice = createSlice({
 
 export const { setUser, setStatus } = authSlice.actions;
 export default authSlice.reducer;
+
+export function register(data: RegisterData) {
+  return async function registerThunk(dispatch: any) {
+    dispatch(setStatus("loading"));
+    try {
+      const response = await API.post("register", data);
+      if (response.status === 201) {
+        dispatch(setStatus("success"));
+      } else {
+        dispatch(setStatus("error"));
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      dispatch(setStatus("error"));
+    }
+  };
+}
+
+export function login(data: LoginData) {
+  return async function loginThunk(dispatch: any) {
+    dispatch(setStatus("loading"));
+    try {
+      const response = await API.post("login", data);
+      if (response.status === 200) {
+        dispatch(setStatus("success"));
+      } else {
+        dispatch(setStatus("error"));
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      dispatch(setStatus("error"));
+    }
+  };
+}
