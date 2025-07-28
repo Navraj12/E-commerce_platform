@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "react-router-dom";
+import type { UserDataType } from "./types";
 
 type FormProps = {
   isRegister?: boolean;
+  onSubmit: (data: UserDataType) => void;
 };
 
-const Form: React.FC<FormProps> = ({ isRegister = false }) => {
+const Form: React.FC<FormProps> = ({ isRegister = false, onSubmit }) => {
+  const [userData, setUserData] = useState<UserDataType>({
+    email: "",
+    username: "",
+    password: "",
+  });
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserData({
+      ...userData,
+      [name]: value,
+    });
+  };
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSubmit(userData);
+  };
+
   return (
     <div
       id="page-container"
@@ -38,10 +58,7 @@ const Form: React.FC<FormProps> = ({ isRegister = false }) => {
 
             <div className="flex flex-col overflow-hidden rounded-lg bg-white shadow-xs dark:bg-gray-800 dark:text-gray-100">
               <div className="grow p-5 md:px-16 md:py-12">
-                <form
-                  className="space-y-6"
-                  onSubmit={(e) => e.preventDefault()}
-                >
+                <form className="space-y-6" onSubmit={handleSubmit}>
                   {isRegister && (
                     <div className="space-y-1">
                       <label
@@ -73,6 +90,7 @@ const Form: React.FC<FormProps> = ({ isRegister = false }) => {
                       name="email"
                       placeholder="Enter your email"
                       className="block w-full rounded-lg border border-gray-200 px-5 py-3 leading-6 placeholder-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500/50 dark:border-gray-600 dark:bg-gray-800 dark:placeholder-gray-400 dark:focus:border-blue-500"
+                      onChange={handleChange}
                     />
                   </div>
 
