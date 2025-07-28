@@ -3,6 +3,7 @@ import express, { Application } from "express";
 import "./database/connection";
 import userRoute from "./routes/userRoute";
 // import './model/index';
+import cors from "cors";
 import cartRoute from "./routes/cartRoute";
 import CategoryRoute from "./routes/categoryRoute";
 import orderRoute from "./routes/orderRoute";
@@ -20,7 +21,11 @@ const PORT = process.env.PORT || 3000;
 //   res.send('About Page');
 // });
 app.use(express.json());
-
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 //admin seeder
 // adminSeeder();
 
