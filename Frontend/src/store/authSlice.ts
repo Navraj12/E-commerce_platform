@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
+import { Status } from "../globals/types/types";
 import API from "../http";
 
 interface RegisterData {
@@ -23,12 +24,12 @@ interface User {
 
 interface AuthState {
   user: User;
-  status: string;
+  status: Status;
 }
 
 const initialState: AuthState = {
   user: {} as User,
-  status: "loading",
+  status: Status.LOADING,
 };
 
 const authSlice = createSlice({
@@ -38,7 +39,7 @@ const authSlice = createSlice({
     setUser(state: AuthState, action: PayloadAction<User>) {
       state.user = action.payload;
     },
-    setStatus(state: AuthState, action: PayloadAction<string>) {
+    setStatus(state: AuthState, action: PayloadAction<Status>) {
       state.status = action.payload;
     },
   },
@@ -49,34 +50,34 @@ export default authSlice.reducer;
 
 export function register(data: RegisterData) {
   return async function registerThunk(dispatch: any) {
-    dispatch(setStatus("loading"));
+    dispatch(setStatus(Status.SUCCESS));
     try {
       const response = await API.post("register", data);
       if (response.status === 201) {
-        dispatch(setStatus("success"));
+        dispatch(setStatus(Status.SUCCESS));
       } else {
-        dispatch(setStatus("error"));
+        dispatch(setStatus(Status.ERROR));
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      dispatch(setStatus("error"));
+      dispatch(setStatus(Status.ERROR));
     }
   };
 }
 
 export function login(data: LoginData) {
   return async function loginThunk(dispatch: any) {
-    dispatch(setStatus("loading"));
+    dispatch(setStatus(Status.LOADING));
     try {
       const response = await API.post("login", data);
       if (response.status === 200) {
-        dispatch(setStatus("success"));
+        dispatch(setStatus(Status.SUCCESS));
       } else {
-        dispatch(setStatus("error"));
+        dispatch(setStatus(Status.ERROR));
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      dispatch(setStatus("error"));
+      dispatch(setStatus(Status.ERROR));
     }
   };
 }
