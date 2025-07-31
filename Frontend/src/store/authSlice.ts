@@ -71,21 +71,44 @@ export function register(data: RegisterData) {
   };
 }
 
+// export function login(data: LoginData) {
+//   return async function loginThunk(dispatch: any) {
+//     dispatch(setStatus(Status.LOADING));
+//     try {
+//       const response = await API.post("login", data);
+//       if (response.status === 200) {
+//         const { data } = response.data;
+//         dispatch(setStatus(Status.SUCCESS));
+//         dispatch(setToken(data));
+//         localStorage.setItem("token", data);
+//       } else {
+//         dispatch(setStatus(Status.ERROR));
+//       }
+//       // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//     } catch (error) {
+//       dispatch(setStatus(Status.ERROR));
+//     }
+//   };
+// }
 export function login(data: LoginData) {
   return async function loginThunk(dispatch: any) {
     dispatch(setStatus(Status.LOADING));
     try {
+      console.log("Sending login request:", data);
       const response = await API.post("login", data);
+
       if (response.status === 200) {
-        const { data } = response.data;
+        const { user } = response.data;
+        const token = response.data.token;
+        dispatch(setUser(user));
+        dispatch(setToken(token));
         dispatch(setStatus(Status.SUCCESS));
-        dispatch(setToken(data));
-        localStorage.setItem("token", data);
+        localStorage.setItem("token", token);
       } else {
         dispatch(setStatus(Status.ERROR));
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Login error:", error.response?.data || error);
       dispatch(setStatus(Status.ERROR));
     }
   };

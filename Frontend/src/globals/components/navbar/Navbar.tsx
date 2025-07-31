@@ -1,6 +1,15 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../../../store/hooks";
 
 const Navbar = () => {
+  const { user } = useAppSelector((state) => state.auth);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token || !!user.token);
+  }, [user.token]);
+
   return (
     <>
       <header
@@ -38,24 +47,29 @@ const Navbar = () => {
               </nav>
             </div>
             <div className="flex items-center">
-              <Link
-                to="/register"
-                className="group flex items-center gap-10 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-gray-800 hover:bg-blue-50 hover:text-blue-600 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:active:border-gray-600"
-              >
-                <span>Register</span>
-              </Link>
-              <Link
-                to="/login"
-                className="group flex items-center gap-10 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-gray-800 hover:bg-blue-50 hover:text-blue-600 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:active:border-gray-600"
-              >
-                <span>Login</span>
-              </Link>
-              <Link
-                to="#"
-                className="group flex items-center gap-10 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-gray-800 hover:bg-blue-50 hover:text-blue-600 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:active:border-gray-600"
-              >
-                <span>Logout</span>
-              </Link>
+              {!isLoggedIn ? (
+                <>
+                  <Link
+                    to="/register"
+                    className="group flex items-center gap-10 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-gray-800 hover:bg-blue-50 hover:text-blue-600 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:active:border-gray-600"
+                  >
+                    <span>Register</span>
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="group flex items-center gap-10 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-gray-800 hover:bg-blue-50 hover:text-blue-600 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:active:border-gray-600"
+                  >
+                    <span>Login</span>
+                  </Link>
+                </>
+              ) : (
+                <Link
+                  to="#"
+                  className="group flex items-center gap-10 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-gray-800 hover:bg-blue-50 hover:text-blue-600 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:active:border-gray-600"
+                >
+                  <span>Logout</span>
+                </Link>
+              )}
             </div>
           </div>
 

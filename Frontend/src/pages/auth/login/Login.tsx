@@ -17,14 +17,21 @@ const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleLogin = async (data: UserLoginType) => {
-    dispatch(login(data));
+    const loginData = { email: data.email, password: data.password };
+    console.log("Sending login request:", loginData);
+    dispatch(login(loginData));
   };
+
   useEffect(() => {
+    console.log("Status changed to:", status);
     if (status === Status.SUCCESS) {
+      console.log("✅ Login successful, navigating home...");
       dispatch(resetStatus());
       navigate("/");
-    } else {
-      alert("SOmething went wrong");
+    }
+    if (status === Status.ERROR) {
+      alert("Something went wrong");
+      dispatch(resetStatus());
     }
   }, [dispatch, navigate, status]);
 

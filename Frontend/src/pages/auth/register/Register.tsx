@@ -23,7 +23,8 @@ const Register = () => {
       dispatch(resetStatus());
       navigate("/login");
     } else {
-      alert("SOmething went wrong");
+      alert("Something went wrong");
+      dispatch(resetStatus());
     }
   }, [dispatch, navigate, status]);
 

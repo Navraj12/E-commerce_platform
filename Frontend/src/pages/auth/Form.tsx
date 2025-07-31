@@ -1,5 +1,10 @@
-import React, { useState, type ChangeEvent, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import React, {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
+import { Link, useLocation } from "react-router-dom";
 import type { UserDataType } from "./types";
 
 type FormProps = {
@@ -13,57 +18,67 @@ const Form: React.FC<FormProps> = ({ isRegister = false, onSubmit }) => {
     username: "",
     password: "",
   });
+  const location = useLocation();
 
+  // Reset form whenever the route changes
+  useEffect(() => {
+    setUserData({ email: "", username: "", password: "" });
+  }, [location.pathname]);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUserData({
-      ...userData,
+    setUserData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("✅ Data from form:", userData);
     onSubmit(userData);
   };
 
   return (
     <div
       id="page-container"
-      className="mx-auto flex min-h-dvh w-full min-w-80 flex-col bg-gray-100 dark:bg-gray-900 dark:text-gray-100"
+      className="mx-auto flex min-h-screen w-full min-w-80 flex-col bg-gray-100 dark:bg-gray-900 dark:text-gray-100"
     >
       <main id="page-content" className="flex max-w-full flex-auto flex-col">
-        <div className="relative mx-auto flex min-h-dvh w-full max-w-10xl items-center justify-center overflow-hidden p-4 lg:p-8">
-          <section className="w-full max-w-xl py-6">
+        <div className="relative mx-auto flex min-h-screen w-full max-w-4xl items-center justify-center p-4 lg:p-8">
+          <section className="w-full max-w-md py-6">
+            {/* Header */}
             <header className="mb-10 text-center">
-              <h1 className="mb-2 inline-flex items-center gap-2 text-2xl font-bold">
+              <h1 className="mb-2 flex items-center justify-center gap-2 text-2xl font-bold">
+                {/* You can replace the path with a valid icon */}
                 <svg
-                  className="hi-mini hi-cube-transparent inline-block size-5 text-blue-600 dark:text-blue-500"
+                  className="size-6 text-blue-600 dark:text-blue-500"
                   xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
+                  viewBox="0 0 24 24"
                   fill="currentColor"
                 >
                   <path
                     fillRule="evenodd"
-                    d="M9.638 1.093a.75.75..."
+                    d="M12 2a10 10 0 100 20 10 10 0 000-20zM11 14h2v2h-2v-2zm0-8h2v6h-2V6z"
                     clipRule="evenodd"
                   />
                 </svg>
                 <span>Company</span>
               </h1>
               <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Welcome, please {isRegister === true ? "sign up " : "sign in "}{" "}
-                to your dashboard
+                Welcome, please {isRegister ? "sign up" : "sign in"} to your
+                dashboard
               </h2>
             </header>
 
-            <div className="flex flex-col overflow-hidden rounded-lg bg-white shadow-xs dark:bg-gray-800 dark:text-gray-100">
-              <div className="grow p-5 md:px-16 md:py-12">
+            {/* Card */}
+            <div className="rounded-lg bg-white shadow-md dark:bg-gray-800">
+              <div className="p-6 md:p-10">
                 <form className="space-y-6" onSubmit={handleSubmit}>
                   {isRegister && (
-                    <div className="space-y-1">
+                    <div>
                       <label
                         htmlFor="username"
-                        className="inline-block text-sm font-medium"
+                        className="mb-1 block text-sm font-medium"
                       >
                         Username
                       </label>
@@ -71,16 +86,18 @@ const Form: React.FC<FormProps> = ({ isRegister = false, onSubmit }) => {
                         type="text"
                         id="username"
                         name="username"
+                        value={userData.username}
+                        onChange={handleChange}
                         placeholder="Enter your username"
-                        className="block w-full rounded-lg border border-gray-200 px-5 py-3 leading-6 placeholder-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500/50 dark:border-gray-600 dark:bg-gray-800 dark:placeholder-gray-400 dark:focus:border-blue-500"
+                        className="block w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                       />
                     </div>
                   )}
 
-                  <div className="space-y-1">
+                  <div>
                     <label
                       htmlFor="email"
-                      className="inline-block text-sm font-medium"
+                      className="mb-1 block text-sm font-medium"
                     >
                       Email
                     </label>
@@ -88,16 +105,18 @@ const Form: React.FC<FormProps> = ({ isRegister = false, onSubmit }) => {
                       type="email"
                       id="email"
                       name="email"
-                      placeholder="Enter your email"
-                      className="block w-full rounded-lg border border-gray-200 px-5 py-3 leading-6 placeholder-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500/50 dark:border-gray-600 dark:bg-gray-800 dark:placeholder-gray-400 dark:focus:border-blue-500"
+                      value={userData.email}
                       onChange={handleChange}
+                      placeholder="Enter your email"
+                      required
+                      className="block w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                     />
                   </div>
 
-                  <div className="space-y-1">
+                  <div>
                     <label
                       htmlFor="password"
-                      className="inline-block text-sm font-medium"
+                      className="mb-1 block text-sm font-medium"
                     >
                       Password
                     </label>
@@ -105,73 +124,64 @@ const Form: React.FC<FormProps> = ({ isRegister = false, onSubmit }) => {
                       type="password"
                       id="password"
                       name="password"
+                      value={userData.password}
+                      onChange={handleChange}
                       placeholder="Enter your password"
-                      className="block w-full rounded-lg border border-gray-200 px-5 py-3 leading-6 placeholder-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500/50 dark:border-gray-600 dark:bg-gray-800 dark:placeholder-gray-400 dark:focus:border-blue-500"
+                      required
+                      className="block w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                     />
                   </div>
-                  <div>
-                    <div className="mb-5 flex items-center justify-between gap-2">
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="remember_me"
-                          name="remember_me"
-                          className="size-4 rounded-sm border border-gray-200 text-blue-500 checked:border-blue-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500/50 dark:border-gray-600 dark:bg-gray-800 dark:ring-offset-gray-900 dark:checked:border-transparent dark:checked:bg-blue-500 dark:focus:border-blue-500"
-                        />
-                        <span className="ml-2 text-sm">Remember me</span>
-                      </label>
-                      <a
-                        href="javascript:void(0)"
-                        className="inline-block text-sm font-medium text-blue-600 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300"
-                      >
-                        Forgot Password?
-                      </a>
-                    </div>
-                    <button
-                      type="submit"
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-blue-700 bg-blue-700 px-6 py-3 leading-6 font-semibold text-white hover:border-blue-600 hover:bg-blue-600 hover:text-white focus:ring-3 focus:ring-blue-400/50 active:border-blue-700 active:bg-blue-700 dark:focus:ring-blue-400/90"
+
+                  <div className="flex items-center justify-between text-sm">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="remember_me"
+                        name="remember_me"
+                        className="size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+                      />
+                      Remember me
+                    </label>
+                    <a
+                      href="#"
+                      className="text-blue-600 hover:text-blue-500 dark:text-blue-400"
                     >
-                      <svg
-                        className="hi-mini hi-arrow-uturn-right inline-block size-5 opacity-50"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M12.207 2.232a.75.75 0 00.025 1.06l4.146 3.958H6.375a5.375 5.375 0 000 10.75H9.25a.75.75 0 000-1.5H6.375a3.875 3.875 0 010-7.75h10.003l-4.146 3.957a.75.75 0 001.036 1.085l5.5-5.25a.75.75 0 000-1.085l-5.5-5.25a.75.75 0 00-1.06.025z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                      <span>
-                        {isRegister === true ? "sign up " : "sign in "}
-                      </span>
-                    </button>
+                      Forgot Password?
+                    </a>
                   </div>
+
+                  <button
+                    type="submit"
+                    className="w-full rounded-lg bg-blue-600 py-2 font-semibold text-white hover:bg-blue-500 focus:ring-2 focus:ring-blue-400"
+                  >
+                    {isRegister ? "Sign Up" : "Sign In"}
+                  </button>
                 </form>
               </div>
-              {isRegister === true ? (
-                <div className="grow bg-gray-50 p-5 text-center text-sm md:px-16 dark:bg-gray-700/50">
-                  Already have an account:
-                  <Link
-                    to="/login"
-                    className="font-medium text-blue-600 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300"
-                  >
-                    Sign in
-                  </Link>
-                </div>
-              ) : (
-                <div className="grow bg-gray-50 p-5 text-center text-sm md:px-16 dark:bg-gray-700/50">
-                  Don’t have an account yet?
-                  <Link
-                    to="/register"
-                    className="font-medium text-blue-600 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300"
-                  >
-                    Sign up
-                  </Link>
-                </div>
-              )}
+
+              <div className="border-t bg-gray-50 px-6 py-4 text-center text-sm dark:border-gray-700 dark:bg-gray-700/50">
+                {isRegister ? (
+                  <>
+                    Already have an account?{" "}
+                    <Link
+                      to="/login"
+                      className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400"
+                    >
+                      Sign in
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    Don’t have an account yet?{" "}
+                    <Link
+                      to="/register"
+                      className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400"
+                    >
+                      Sign up
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
           </section>
         </div>
