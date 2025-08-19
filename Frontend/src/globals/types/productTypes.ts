@@ -1,4 +1,4 @@
-import  { Status } from "./types";
+import { Status } from "./types";
 
 interface User {
   id: string;
@@ -23,9 +23,9 @@ export interface Product {
   User: User;
   Category: Category;
 }
- 
+
 export interface ProductState {
   product: Product[];
-  status: Status
-singleProduct:Product | null
+  status: Status;
+  singleProduct: Product | null;
 }
