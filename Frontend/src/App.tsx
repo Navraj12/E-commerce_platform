@@ -5,8 +5,8 @@ import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
 import Home from "./pages/home/Home";
 
+import SingleProduct from "./pages/singleProduct/SingleProduct";
 import store from "./store/store";
-import SingleProduct from "./pages/singleProduct/SIngleProduct";
 
 function App() {
   return (
