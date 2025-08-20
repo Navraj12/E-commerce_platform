@@ -70,18 +70,27 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                <Link
-                  to="#"
-                  onClick={handleLogout}
-                  className="group flex items-center gap-10 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-gray-800 hover:bg-blue-50 hover:text-blue-600 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:active:border-gray-600"
-                >
-                  <span>Logout</span>
-                </Link>
+                <>
+                  <Link
+                    to="/cart"
+                    className="group flex items-center gap-10 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-gray-800 hover:bg-blue-50 hover:text-blue-600 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:active:border-gray-600"
+                  >
+                    <span>Cart</span>
+                  </Link>
+
+                  <Link
+                    to="#"
+                    onClick={handleLogout}
+                    className="group flex items-center gap-10 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-gray-800 hover:bg-blue-50 hover:text-blue-600 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:active:border-gray-600"
+                  >
+                    <span>Logout</span>
+                  </Link>
+                </>
               )}
             </div>
           </div>
 
-          <div className="lg:hidden">
+          {/* <div className="lg:hidden">
             <nav className="flex flex-col gap-2 border-t border-gray-200 py-4 dark:border-gray-700">
               <a
                 href="#"
@@ -108,7 +117,7 @@ const Navbar = () => {
                 <span>Sales</span>
               </a>
             </nav>
-          </div>
+          </div> */}
         </div>
       </header>
     </>

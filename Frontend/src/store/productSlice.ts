@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type {} from "@reduxjs/toolkit/query";
 import type { Product, ProductState } from "../globals/types/productTypes";
 import { Status } from "../globals/types/types";
-import API from "../http";
+import { API } from "../http";
 import type { AppDispatch, RootState } from "./store";
 
 const initialState: ProductState = {

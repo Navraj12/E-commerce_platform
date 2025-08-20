@@ -2,7 +2,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import { Status } from "../globals/types/types";
-import API from "../http";
+import { API } from "../http";
 
 interface RegisterData {
   username: string;
