@@ -45,3 +45,21 @@ export function addToCart(productId: string) {
     }
   };
 }
+
+export function FetchCartItems() {
+  return async function addToCartThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.get("customer/cart");
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setItems(response.data.data));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}

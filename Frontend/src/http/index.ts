@@ -8,13 +8,15 @@ const API = axios.create({
   },
 });
 
+const token = localStorage.getItem("token");
 const APIAuthenticated = axios.create({
   baseURL: "http://localhost:3000/",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
-    Authorization: `${localStorage.getItem("token")}`,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   },
 });
+console.log("Token:", localStorage.getItem("token"));
 
 export { API, APIAuthenticated };

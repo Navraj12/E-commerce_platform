@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../../store/hooks";
+import { FetchCartItems } from "../../../store/cartSlice";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const { items } = useAppSelector((state) => state.carts);
+  console.log(items);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token || !!user.token);
-  }, [user.token]);
+    dispatch(FetchCartItems);
+  }, [dispatch, user.token]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -75,7 +81,9 @@ const Navbar = () => {
                     to="/cart"
                     className="group flex items-center gap-10 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-gray-800 hover:bg-blue-50 hover:text-blue-600 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:active:border-gray-600"
                   >
-                    <span>Cart</span>
+                    <span>
+                      Cart <sub>{items.length}</sub>{" "}
+                    </span>
                   </Link>
 
                   <Link
