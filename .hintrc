@@ -6,6 +6,18 @@
     "typescript-config/consistent-casing": "off",
     "typescript-config/strict": "off",
     "disown-opener": "off",
-    "button-type": "off"
+    "button-type": "off",
+    "axe/forms": [
+      "default",
+      {
+        "label": "off"
+      }
+    ],
+    "axe/text-alternatives": [
+      "default",
+      {
+        "image-alt": "off"
+      }
+    ]
   }
 }

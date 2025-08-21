@@ -9,6 +9,13 @@ const initialState: CartState = {
   status: Status.LOADING,
 };
 
+interface DeleteAction {
+  productId: string;
+}
+
+interface UpdateAction extends DeleteAction {
+  quantity: number;
+}
 const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -19,10 +26,24 @@ const cartSlice = createSlice({
     setStatus(state: CartState, action: PayloadAction<Status>) {
       state.status = action.payload;
     },
+    setDeleteItem(state: CartState, action: PayloadAction<DeleteAction>) {
+      const index = state.items.findIndex(
+        (item) => (item.Product.id = action.payload.productId)
+      );
+      state.items.splice(index, 1);
+    },
+    setUpdateItem(state: CartState, action: PayloadAction<UpdateAction>) {
+      const index = state.items.findIndex(
+        (item) => item.Product.id === action.payload.productId
+      );
+      if (index !== -1) {
+        state.items[index].quantity = action.payload.quantity;
+      }
+    },
   },
 });
 
-export const { setItems, setStatus } = cartSlice.actions;
+export const { setItems, setStatus, setDeleteItem ,setUpdateItem} = cartSlice.actions;
 export default cartSlice.reducer;
 
 export function addToCart(productId: string) {
@@ -54,6 +75,48 @@ export function FetchCartItems() {
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setItems(response.data.data));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function deleteCartItem(productId: string) {
+  return async function deleteCartThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.delete(
+        "customer/cart" + productId
+      );
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setDeleteItem({ productId }));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function updateCarttItem(productId: string,quantity:number) {
+  return async function updateCartThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.patch(
+        "customer/cart" + productId ,{
+quantity
+}
+      );
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setUpdateItem({ productId, quantity }));
       } else {
         dispatch(setStatus(Status.ERROR));
       }

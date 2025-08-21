@@ -2,7 +2,7 @@ import type { Product } from "./productTypes";
 import type { Status } from "./types";
 
 export interface CartItem {
-  product: Product;
+  Product: Product;
   quantity: number;
 }
 
