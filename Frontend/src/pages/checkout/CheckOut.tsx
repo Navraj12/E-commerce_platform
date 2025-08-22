@@ -1,6 +1,11 @@
+import Navbar from "../../globals/components/navbar/Navbar";
+import { useAppSelector } from "../../store/hooks";
+
 const CheckOut = () => {
+  const { items } = useAppSelector((state) => state.carts);
   return (
     <>
+      <Navbar />
       <div className="flex flex-col items-center border-b bg-white py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32">
         <div className="mt-4 py-7 text-xs sm:mt-0 sm:ml-auto sm:text-base"></div>
       </div>
@@ -11,18 +16,30 @@ const CheckOut = () => {
             Check your items. And select a suitable shipping method.
           </p>
           <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-            <div className="flex flex-col rounded-lg bg-white sm:flex-row">
-              <img
-                className="m-2 h-24 w-28 rounded-md border object-cover object-center"
-                src="https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
-                alt=""
-              />
-              <div className="flex w-full flex-col px-4 py-4">
-                <span className="font-semibold">productName</span>
-                <span className="float-right text-gray-400">Qty :pqty </span>
-                <p className="text-lg font-bold">Rs.pp </p>
-              </div>
-            </div>
+            {items.length > 0 &&
+              items.map((item) => {
+                return (
+                  <div className="flex flex-col rounded-lg bg-white sm:flex-row">
+                    <img
+                      className="m-2 h-24 w-28 rounded-md border object-cover object-center"
+                      src="https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
+                      alt=""
+                    />
+                    <div className="flex w-full flex-col px-4 py-4">
+                      <span className="font-semibold">
+                        {" "}
+                        {item?.Product?.productName}{" "}
+                      </span>
+                      <span className="float-right text-gray-400">
+                        Qty :{item?.quantity}{" "}
+                      </span>
+                      <p className="text-lg font-bold">
+                        Rs.{item?.Product?.productPrice}{" "}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
           </div>
 
           <p className="mt-8 text-lg font-medium">Payment Methods</p>
