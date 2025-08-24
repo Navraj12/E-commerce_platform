@@ -1,8 +1,66 @@
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import Navbar from "../../globals/components/navbar/Navbar";
+import {
+  PaymentMethod,
+  type ItemDetails,
+  type OrderData,
+} from "../../globals/types/checkOutTypes";
 import { useAppSelector } from "../../store/hooks";
 
 const CheckOut = () => {
   const { items } = useAppSelector((state) => state.carts);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
+    PaymentMethod.COD
+  );
+  const [data, setData] = useState<OrderData>({
+    phoneNumber: "",
+    shippingAddress: "",
+    totalAmount: 0,
+    paymentDetails: {
+      paymentMethod: PaymentMethod.COD,
+    },
+    items: [],
+  });
+
+  const handlePaymentMethod = (e: ChangeEvent<HTMLInputElement>) => {
+    setPaymentMethod(e.target.value as PaymentMethod);
+    setData({
+      ...data,
+      paymentDetails: {
+        paymentMethod,
+      },
+    });
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setData({
+      ...data,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const itemDetails: ItemDetails[] = items.map((item) => {
+      return {
+        productId: item.Product.id,
+        quantity: item.quantity,
+      };
+    });
+    const totalAmount = items.reduce(
+      (total, item) => item.Product.productPrice * item.quantity + total,
+      0
+    );
+    const orderData = {
+      ...data,
+      items: itemDetails,
+      totalAmount,
+    };
+    // Example usage: log orderData or send to API
+    console.log(orderData);
+  };
+
   return (
     <>
       <Navbar />
@@ -43,14 +101,15 @@ const CheckOut = () => {
           </div>
 
           <p className="mt-8 text-lg font-medium">Payment Methods</p>
-          <form className="mt-5 grid gap-6">
+          <form className="mt-5 grid gap-6" onSubmit={handleSubmit}>
             <div className="relative">
               <input
                 className="peer hidden"
                 id="radio_1"
                 type="radio"
                 name="radio"
-                value="COD"
+                value={PaymentMethod.COD}
+                onChange={handlePaymentMethod}
               />
               <span className="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
               <label
@@ -74,7 +133,8 @@ const CheckOut = () => {
                 className="peer hidden"
                 id="radio_2"
                 type="radio"
-                value="khalti"
+                value={PaymentMethod.COD}
+                onChange={handlePaymentMethod}
                 name="radio"
               />
               <span className="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
@@ -145,6 +205,7 @@ const CheckOut = () => {
                   id="phoneNumber"
                   name="phoneNumber"
                   className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                  onChange={handleChange}
                   placeholder="Your Phone Number"
                 />
 
@@ -164,6 +225,7 @@ const CheckOut = () => {
                     id="billing-address"
                     name="shippingAddress"
                     className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                    onChange={handleChange}
                     placeholder="Street Address"
                   />
                   <p></p>
