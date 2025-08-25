@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Request, Response } from "express";
+import Cart from "../database/models/Cart";
 import Order from "../database/models/Order";
 import OrderDetail from "../database/models/OrderDetails";
 import Payment from "../database/models/Payment";
@@ -58,11 +59,19 @@ class OrderController {
     });
     // console.log("something", orderData);
 
+    let responseOrderData;
+
     for (var i = 0; i < items.length; i++) {
-      await OrderDetail.create({
+      responseOrderData = await OrderDetail.create({
         quantity: items[i].quantity,
         productId: items[0].productId,
         orderId: orderData.id,
+      });
+      await Cart.destroy({
+        where: {
+          productId: items[i].productId,
+          userId: userId,
+        },
       });
     }
     if (PaymentDetails.paymentMethod == PaymentMethod.Khalti) {
@@ -89,6 +98,7 @@ class OrderController {
       res.status(200).json({
         message: "order placed successfully",
         url: KhaltiResponse.payment_url,
+        data: responseOrderData,
       });
       // console.log(url);
     } else {

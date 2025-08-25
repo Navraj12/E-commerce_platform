@@ -1,3 +1,5 @@
+import type { Status } from "./types";
+
 export const PaymentMethod = {
   COD: "cod",
   Khalti: "khalti",
@@ -10,6 +12,10 @@ export interface ItemDetails {
   quantity: number;
 }
 
+export interface OrderResponseItem extends ItemDetails {
+  orderId: string;
+}
+
 export interface OrderData {
   phoneNumber: string;
   shippingAddress: string;
@@ -18,4 +24,10 @@ export interface OrderData {
     paymentMethod: PaymentMethod;
   };
   items: ItemDetails[];
+}
+
+export interface OrderResponseData {
+  items: OrderResponseItem[];
+  status: Status;
+  khaltiUrl: string | null;
 }
