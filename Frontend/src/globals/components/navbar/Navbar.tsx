@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FetchCartItems } from "../../../store/cartSlice";
+import { fetchCartItems } from "../../../store/cartSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 
 const Navbar = () => {
@@ -13,9 +13,9 @@ const Navbar = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token || !!user.token);
-    dispatch(FetchCartItems);
-  }, [dispatch, user.token]);
+    setIsLoggedIn(!!token || !!user?.token);
+    dispatch(fetchCartItems);
+  }, [dispatch, user?.token]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");

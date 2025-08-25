@@ -16,23 +16,23 @@ interface DeleteAction {
 interface UpdateAction extends DeleteAction {
   quantity: number;
 }
+
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    setItems(state: CartState, action: PayloadAction<CartItem[]>) {
+    setItems(state, action: PayloadAction<CartItem[]>) {
       state.items = action.payload;
     },
-    setStatus(state: CartState, action: PayloadAction<Status>) {
+    setStatus(state, action: PayloadAction<Status>) {
       state.status = action.payload;
     },
-    setDeleteItem(state: CartState, action: PayloadAction<DeleteAction>) {
-      const index = state.items.findIndex(
-        (item) => (item.Product.id = action.payload.productId)
+    setDeleteItem(state, action: PayloadAction<DeleteAction>) {
+      state.items = state.items.filter(
+        (item) => item.Product.id !== action.payload.productId
       );
-      state.items.splice(index, 1);
     },
-    setUpdateItem(state: CartState, action: PayloadAction<UpdateAction>) {
+    setUpdateItem(state, action: PayloadAction<UpdateAction>) {
       const index = state.items.findIndex(
         (item) => item.Product.id === action.payload.productId
       );
@@ -43,85 +43,66 @@ const cartSlice = createSlice({
   },
 });
 
-export const { setItems, setStatus, setDeleteItem ,setUpdateItem} = cartSlice.actions;
+export const { setItems, setStatus, setDeleteItem, setUpdateItem } =
+  cartSlice.actions;
+
 export default cartSlice.reducer;
 
+// --- Thunks ---
 export function addToCart(productId: string) {
-  return async function addToCartThunk(dispatch: AppDispatch) {
+  return async (dispatch: AppDispatch) => {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await APIAuthenticated.post("customer/cart", {
+      const response = await APIAuthenticated.post("/customer/cart", {
         productId,
         quantity: 1,
       });
-      if (response.status === 200) {
-        dispatch(setStatus(Status.SUCCESS));
-        dispatch(setItems(response.data.data));
-      } else {
-        dispatch(setStatus(Status.ERROR));
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      dispatch(setItems(response.data.data));
+      dispatch(setStatus(Status.SUCCESS));
     } catch (error) {
+      console.error("Add to cart error:", error);
       dispatch(setStatus(Status.ERROR));
     }
   };
 }
 
-export function FetchCartItems() {
-  return async function addToCartThunk(dispatch: AppDispatch) {
+export function fetchCartItems() {
+  return async (dispatch: AppDispatch) => {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await APIAuthenticated.get("customer/cart");
-      if (response.status === 200) {
-        dispatch(setStatus(Status.SUCCESS));
-        dispatch(setItems(response.data.data));
-      } else {
-        dispatch(setStatus(Status.ERROR));
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const response = await APIAuthenticated.get("/customer/cart");
+      dispatch(setItems(response.data.data));
+      dispatch(setStatus(Status.SUCCESS));
     } catch (error) {
+      console.error("Fetch cart error:", error);
       dispatch(setStatus(Status.ERROR));
     }
   };
 }
 
 export function deleteCartItem(productId: string) {
-  return async function deleteCartThunk(dispatch: AppDispatch) {
+  return async (dispatch: AppDispatch) => {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await APIAuthenticated.delete(
-        "customer/cart" + productId
-      );
-      if (response.status === 200) {
-        dispatch(setStatus(Status.SUCCESS));
-        dispatch(setDeleteItem({ productId }));
-      } else {
-        dispatch(setStatus(Status.ERROR));
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      await APIAuthenticated.delete(`/customer/cart/${productId}`);
+      dispatch(setDeleteItem({ productId }));
+      dispatch(setStatus(Status.SUCCESS));
     } catch (error) {
+      console.error("Delete cart item error:", error);
       dispatch(setStatus(Status.ERROR));
     }
   };
 }
 
-export function updateCarttItem(productId: string,quantity:number) {
-  return async function updateCartThunk(dispatch: AppDispatch) {
+export function updateCartItem(productId: string, quantity: number) {
+  return async (dispatch: AppDispatch) => {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await APIAuthenticated.patch(
-        "customer/cart" + productId ,{
-quantity
-}
-      );
-      if (response.status === 200) {
-        dispatch(setStatus(Status.SUCCESS));
-        dispatch(setUpdateItem({ productId, quantity }));
-      } else {
-        dispatch(setStatus(Status.ERROR));
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      await APIAuthenticated.patch(`/customer/cart/${productId}`, { quantity });
+      dispatch(setUpdateItem({ productId, quantity }));
+      dispatch(setStatus(Status.SUCCESS));
     } catch (error) {
+      console.error("Update cart item error:", error);
       dispatch(setStatus(Status.ERROR));
     }
   };

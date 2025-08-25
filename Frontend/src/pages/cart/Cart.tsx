@@ -1,4 +1,4 @@
-import { deleteCartItem, updateCarttItem } from "../../store/cartSlice";
+import { deleteCartItem, updateCartItem } from "../../store/cartSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
 const Cart = () => {
@@ -10,7 +10,7 @@ const Cart = () => {
   };
 
   const handleUpdate = (productId: string, quantity: number) => {
-    dispatch(updateCarttItem(productId, quantity));
+    dispatch(updateCartItem(productId, quantity));
   };
 
   const totalItemInCarts = items.reduce(

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { Status } from "../globals/types/types";
 import { API } from "../http";
 
+// --- Types ---
 interface RegisterData {
   username: string;
   email: string;
@@ -18,45 +18,49 @@ interface LoginData {
 interface User {
   username: string;
   email: string;
-  password: string;
   token: string;
 }
 
 interface AuthState {
-  user: User;
+  user: User | null;
   status: Status;
 }
 
+// --- Initial state ---
 const initialState: AuthState = {
-  user: {} as User,
+  user: null,
   status: Status.LOADING,
 };
 
+// --- Slice ---
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser(state: AuthState, action: PayloadAction<User>) {
+    setUser(state, action: PayloadAction<User>) {
       state.user = action.payload;
     },
-    setStatus(state: AuthState, action: PayloadAction<Status>) {
+    setStatus(state, action: PayloadAction<Status>) {
       state.status = action.payload;
     },
-    resetStatus(state: AuthState) {
+    resetStatus(state) {
       state.status = Status.LOADING;
     },
-    setToken(state: AuthState, action: PayloadAction<string>) {
-      state.user.token = action.payload;
+    logout(state) {
+      state.user = null;
+      localStorage.removeItem("token");
     },
   },
 });
 
-export const { setUser, setStatus, resetStatus, setToken } = authSlice.actions;
+export const { setUser, setStatus, resetStatus, logout } = authSlice.actions;
 export default authSlice.reducer;
 
+// --- Thunks ---
+// Register user
 export function register(data: RegisterData) {
   return async function registerThunk(dispatch: any) {
-    dispatch(setStatus(Status.SUCCESS));
+    dispatch(setStatus(Status.LOADING));
     try {
       const response = await API.post("register", data);
       if (response.status === 201) {
@@ -71,25 +75,7 @@ export function register(data: RegisterData) {
   };
 }
 
-// export function login(data: LoginData) {
-//   return async function loginThunk(dispatch: any) {
-//     dispatch(setStatus(Status.LOADING));
-//     try {
-//       const response = await API.post("login", data);
-//       if (response.status === 200) {
-//         const { data } = response.data;
-//         dispatch(setStatus(Status.SUCCESS));
-//         dispatch(setToken(data));
-//         localStorage.setItem("token", data);
-//       } else {
-//         dispatch(setStatus(Status.ERROR));
-//       }
-//       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//     } catch (error) {
-//       dispatch(setStatus(Status.ERROR));
-//     }
-//   };
-// }
+// Login user
 export function login(data: LoginData) {
   return async function loginThunk(dispatch: any) {
     dispatch(setStatus(Status.LOADING));
@@ -98,12 +84,22 @@ export function login(data: LoginData) {
       const response = await API.post("login", data);
 
       if (response.status === 200) {
-        const { user } = response.data;
-        const token = response.data.token;
-        dispatch(setUser(user));
-        dispatch(setToken(token));
-        dispatch(setStatus(Status.SUCCESS));
+        const token = response.data.data; // Adjust based on your API
+
+        const user: User = {
+          username: response.data.username || "", // get username if your API provides
+          email: data.email,
+          token,
+        };
+
+        // Save token for authenticated requests
         localStorage.setItem("token", token);
+
+        dispatch(setUser(user));
+        dispatch(setStatus(Status.SUCCESS));
+
+        // Redirect to homepage
+        window.location.href = "/";
       } else {
         dispatch(setStatus(Status.ERROR));
       }

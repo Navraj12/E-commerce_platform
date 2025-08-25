@@ -1,22 +1,24 @@
+// src/http/index.ts
 import axios from "axios";
 
-const API = axios.create({
-  baseURL: "http://localhost:3000/",
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
+const BASE_URL = "http://localhost:5000/";
+
+export const API = axios.create({
+  baseURL: BASE_URL,
 });
 
-const token = localStorage.getItem("token");
-const APIAuthenticated = axios.create({
-  baseURL: "http://localhost:3000/",
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  },
+export const APIAuthenticated = axios.create({
+  baseURL: BASE_URL,
 });
-console.log("Token:", localStorage.getItem("token"));
 
-export { API, APIAuthenticated };
+// Add request interceptor to include token
+APIAuthenticated.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
