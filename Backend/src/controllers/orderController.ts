@@ -1,10 +1,12 @@
 import axios from "axios";
 import { Request, Response } from "express";
 import Cart from "../database/models/Cart";
+import Category from "../database/models/Category";
 import Order from "../database/models/Order";
 import OrderDetail from "../database/models/OrderDetails";
 import Payment from "../database/models/Payment";
 import Product from "../database/models/Product";
+import User from "../database/models/User";
 import { AuthRequest } from "../middleware/authMiddleware";
 import {
   KhaltiResponse,
@@ -191,6 +193,26 @@ class OrderController {
       include: [
         {
           model: Product,
+
+          include: [
+            {
+              model: Category,
+              attributes: ["categoryName"],
+            },
+          ],
+        },
+        {
+          model: Order,
+          include: [
+            {
+              model: Payment,
+              attributes: ["paymentMethod", "paymentStatus"],
+            },
+            {
+              model: User,
+              attributes: ["username", "email"],
+            },
+          ],
         },
       ],
     });

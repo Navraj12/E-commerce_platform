@@ -2,6 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type {
   MyOrderData,
   OrderData,
+  OrderDetails,
   OrderResponseData,
   OrderResponseItem,
 } from "../globals/types/checkOutTypes";
@@ -17,6 +18,7 @@ const initialState: OrderResponseData = {
   status: Status.LOADING,
   khaltiUrl: null,
   myOrders: [],
+  orderDetails: [],
 };
 
 const orderSlice = createSlice({
@@ -46,6 +48,12 @@ const orderSlice = createSlice({
     ) {
       state.khaltiUrl = action.payload;
     },
+    setOrderDetails(
+      state: OrderResponseData,
+      action: PayloadAction<OrderDetails[]>
+    ) {
+      state.orderDetails = action.payload;
+    },
   },
 });
 
@@ -54,6 +62,7 @@ export const {
   setStatus: setOrderStatus,
   setKhaltiUrl,
   setMyOrders,
+  setOrderDetails,
 } = orderSlice.actions;
 export default orderSlice.reducer;
 
@@ -88,6 +97,24 @@ export function fetchMyOrders() {
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setMyOrders(response.data.data));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function fetchMyOrderDetails(id: string) {
+  return async function fetchMyOrderDetailsThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.post("/order/customer/" + id);
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setOrderDetails(response.data.data));
       } else {
         dispatch(setStatus(Status.ERROR));
       }

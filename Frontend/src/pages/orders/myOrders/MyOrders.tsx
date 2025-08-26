@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../../../globals/components/navbar/Navbar";
 import { fetchMyOrders } from "../../../store/checkoutSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
@@ -107,15 +108,19 @@ const MyOrders = () => {
                                             </div>
                                         </div>
                                     </td> */}
-                            <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                              <p
-                                className="text-blue-900 whitespace-no-wrap"
-                                style={{ textDecoration: "underline" }}
-                              >
-                                {" "}
-                                {order.id}{" "}
-                              </p>
-                            </td>
+
+                            <Link to={`/myOrders/${order.id}`}>
+                              <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <p
+                                  className="text-blue-900 whitespace-no-wrap"
+                                  style={{ textDecoration: "underline" }}
+                                >
+                                  {" "}
+                                  {order.id}{" "}
+                                </p>
+                              </td>
+                            </Link>
+
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
                                 {" "}

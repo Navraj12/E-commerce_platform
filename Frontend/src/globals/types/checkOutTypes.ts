@@ -1,3 +1,4 @@
+import type { Product } from "./productTypes";
 import type { Status } from "./types";
 
 export const PaymentMethod = {
@@ -53,12 +54,18 @@ export interface OrderResponseData {
   items: OrderResponseItem[];
   status: Status;
   khaltiUrl: string | null;
-  myOrders: MyOrderData[]
+  myOrders: MyOrderData[];
+  orderDetails: OrderDetails[]
+}
+
+interface UserData {
+  username: string;
+  email: string;
 }
 
 export interface MyOrderData {
   id: string;
-  userId: string;
+  userId: UserData;
   phoneNumber: string;
   shippingAddress: string;
   totalAmount: number;
@@ -66,4 +73,12 @@ export interface MyOrderData {
   orderStatus: OrderStatus;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface OrderDetails {
+  id: string;
+  quantity: number;
+  orderId: string;
+  Product: Product;
+  Order: MyOrderData;
 }
