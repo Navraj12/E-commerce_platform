@@ -8,12 +8,13 @@ export const PaymentMethod = {
 
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod];
 
-enum OrderStatus {
+export enum OrderStatus {
   Pending = "pending",
   Delivered = "delivered",
   Ontheway = "ontheway",
   Cancelled = "cancelled",
   Preparation = "preparation",
+  All = "all",
 }
 
 export interface ItemDetails {
@@ -55,7 +56,7 @@ export interface OrderResponseData {
   status: Status;
   khaltiUrl: string | null;
   myOrders: MyOrderData[];
-  orderDetails: OrderDetails[]
+  orderDetails: OrderDetails[];
 }
 
 interface UserData {
