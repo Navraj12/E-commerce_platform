@@ -9,6 +9,11 @@ router
   .post(
     authMiddleware.isAuthenticated,
     errorHandler(orderController.createOrder)
+  )
+  .get(
+    authMiddleware.isAuthenticated,
+    authMiddleware.restrictTo(Role.Admin) as RequestHandler,
+    orderController.fetchOrders
   );
 router
   .route("/verify")

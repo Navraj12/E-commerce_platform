@@ -13,6 +13,8 @@ const MyOrders = () => {
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
 
+const [date, setDate] = useState<string>("");
+
   useEffect(() => {
     dispatch(fetchMyOrders());
   });
@@ -32,7 +34,7 @@ const MyOrders = () => {
         order.orderStatus.toLowerCase().includes(searchTerm) ||
         order.userId.username.toLowerCase().includes(searchTerm) ||
         order.userId.email.toLowerCase().includes(searchTerm)
-    );
+    ).filter((order) => date === "" || new Date(order.createdAt).toLocaleDateString() === new Date(date).toLocaleDateString());
 
   return (
     <>
@@ -90,7 +92,8 @@ const MyOrders = () => {
                 <input
                   placeholder="Search"
                   type="date"
-                  value=""
+value={date}
+                  onChange={(e) => setDate(e.target.value)}
                   className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
                 />
               </div>
