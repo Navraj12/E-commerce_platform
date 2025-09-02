@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import Jwt from "jsonwebtoken";
 import User from "../database/models/User";
+import { AuthRequest } from "../middleware/authMiddleware";
 
 /* The AuthController class in TypeScript provides a method to register a user with validation checks and password hashing. */
 class AuthController {
@@ -60,6 +61,24 @@ class AuthController {
       message: "Logged in successfully",
       data: token,
     });
+  }
+
+  public static async fetchUsers(
+    req: AuthRequest,
+    res: Response
+  ): Promise<void> {
+    const users = await User.findAll();
+    if (users.length > 0) {
+      res.status(200).json({
+        message: "order fetched successfully",
+        data: users,
+      });
+    } else {
+      res.status(404).json({
+        message: "you haven't ordered anything yet..",
+        data: [],
+      });
+    }
   }
 }
 
