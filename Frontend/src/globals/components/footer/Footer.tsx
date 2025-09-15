@@ -8,12 +8,12 @@ const Footer = () => {
         <div className="container mx-auto flex flex-col px-4 text-center text-sm md:flex-row md:justify-between md:text-left lg:px-8 xl:max-w-7xl">
           <div className="pt-4 pb-1 md:pb-4">
             <a
-              href="https://tailkit.com"
+              href="https://github.com/Navraj12"
               className="font-medium text-blue-600 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Tailkit
+              Navraj Awasthi
             </a>
             ©
           </div>

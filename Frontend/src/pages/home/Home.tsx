@@ -23,7 +23,7 @@ const Home = () => {
         <Hero />
 
         <div className="flex flex-col items-center mt-8">
-          <h1 className="text-4xl font-bold text-center mb-6 text-gray-800">
+          <h1 className="text-4xl font-bold text-center mb-6 text-black-800">
             Top Products
           </h1>
           <div className="flex flex-wrap justify center gap-6">
