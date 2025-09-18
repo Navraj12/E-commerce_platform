@@ -60,6 +60,7 @@ export default authSlice.reducer;
 // Register user
 export function register(data: RegisterData) {
   return async function registerThunk(dispatch: any) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     dispatch(setStatus(Status.LOADING));
     try {
       const response = await API.post("register", data);

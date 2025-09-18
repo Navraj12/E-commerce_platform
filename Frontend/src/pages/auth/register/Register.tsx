@@ -22,7 +22,9 @@ const Register = () => {
     if (status === Status.SUCCESS) {
       dispatch(resetStatus());
       navigate("/login");
-    } else {
+    }
+
+    if (status === Status.ERROR) {
       alert("Something went wrong");
       dispatch(resetStatus());
     }
