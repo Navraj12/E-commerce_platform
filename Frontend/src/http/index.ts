@@ -1,7 +1,7 @@
 // src/http/index.ts
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/";
+const BASE_URL = "http://localhost:3000/";
 
 export const API = axios.create({
   baseURL: BASE_URL,

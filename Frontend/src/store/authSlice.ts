@@ -63,6 +63,7 @@ export function register(data: RegisterData) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     dispatch(setStatus(Status.LOADING));
     try {
+
       const response = await API.post("register", data);
       if (response.status === 201) {
         dispatch(setStatus(Status.SUCCESS));

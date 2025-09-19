@@ -12,20 +12,22 @@ import type { UserDataType } from "../types";
 
 const Register = () => {
   const navigate = useNavigate();
-  const { status } = useAppSelector((state) => state.auth);
+  const { status } = useAppSelector((state) => state.auth); // ✅ also grab error
   const dispatch = useDispatch<AppDispatch>();
 
   const handleRegister = async (data: UserDataType) => {
-    dispatch(register(data));
+    await dispatch(register(data));
   };
+
   useEffect(() => {
     if (status === Status.SUCCESS) {
       dispatch(resetStatus());
       navigate("/login");
     }
 
-    if (status === Status.ERROR) {
-      alert("Something went wrong");
+    if (status === Status.ERROR && Error) {
+      // ✅ show real backend error
+      alert(Error);
       dispatch(resetStatus());
     }
   }, [dispatch, navigate, status]);
