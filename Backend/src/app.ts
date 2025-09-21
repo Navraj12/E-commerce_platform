@@ -4,15 +4,15 @@ import "./database/connection";
 import userRoute from "./routes/userRoute";
 // import './model/index';
 import cors from "cors";
+import path from "path";
 import cartRoute from "./routes/cartRoute";
 import CategoryRoute from "./routes/categoryRoute";
 import orderRoute from "./routes/orderRoute";
 import productRoute from "./routes/productRoute";
-import path from "path";
 dotenv.config();
 
 const app: Application = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // app.get('/', (req: Request, res: Response) => {
 //   res.send('Hello World');
@@ -35,8 +35,8 @@ app.use("/admin/product", productRoute);
 app.use("/admin/category", CategoryRoute);
 app.use("/customer/cart", cartRoute);
 app.use("/order", orderRoute);
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-path.join(__dirname, "../src/uploads")
+app.use("/uploads", express.static(path.join(__dirname, "../src/uploads")));
+path.join(__dirname, "../src/uploads");
 
 app.listen(PORT, () => {
   // categoryController.seedCategory();
