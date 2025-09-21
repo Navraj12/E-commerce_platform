@@ -8,6 +8,7 @@ import cartRoute from "./routes/cartRoute";
 import CategoryRoute from "./routes/categoryRoute";
 import orderRoute from "./routes/orderRoute";
 import productRoute from "./routes/productRoute";
+import path from "path";
 dotenv.config();
 
 const app: Application = express();
@@ -34,6 +35,8 @@ app.use("/admin/product", productRoute);
 app.use("/admin/category", CategoryRoute);
 app.use("/customer/cart", cartRoute);
 app.use("/order", orderRoute);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+path.join(__dirname, "../src/uploads")
 
 app.listen(PORT, () => {
   // categoryController.seedCategory();

@@ -58,7 +58,7 @@ const Form: React.FC<FormProps> = ({ isRegister = false, onSubmit }) => {
                 >
                   <path
                     fillRule="evenodd"
-                    d="M12 2a10 10 0 100 20 10 10 0 000-20zM11 14h2v2h-2v-2zm0-8h2v6h-2V6z"
+                    // d="M12 2a10 10 0 100 20 10 10 0 000-20zM11 14h2v2h-2v-2zm0-8h2v6h-2V6z"
                     clipRule="evenodd"
                   />
                 </svg>

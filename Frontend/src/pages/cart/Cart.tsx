@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
 const Cart = () => {
   const { items } = useAppSelector((state) => state.carts);
+  // const itemsArray = Array.isArray(items) ? items : items ? [items] : [];
 
   const dispatch = useAppDispatch();
   const handleDelete = (productId: string) => {
@@ -34,7 +35,7 @@ const Cart = () => {
                   <div className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start">
                     <img
                       src={item.Product.productImageUrl}
-                      className="h-[100px]"
+                      className="h-24 w-24 rounded-lg object-cover sm:h-32 sm:w-32"
                     />
                     <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
                       <div className="mt-5 sm:mt-0">
