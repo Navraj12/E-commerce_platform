@@ -1,5 +1,6 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import Footer from "../../globals/components/footer/Footer";
 import Navbar from "../../globals/components/navbar/Navbar";
 import {
   PaymentMethod,
@@ -7,6 +8,7 @@ import {
   type OrderData,
 } from "../../globals/types/checkOutTypes";
 import { Status } from "../../globals/types/types";
+import { BASE_URL } from "../../http";
 import { orderItem } from "../../store/checkoutSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
@@ -101,7 +103,13 @@ const CheckOut = () => {
                   <div className="flex flex-col rounded-lg bg-white sm:flex-row">
                     <img
                       className="m-2 h-24 w-28 rounded-md border object-cover object-center"
-                      src="https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
+                      src={
+                        item?.Product?.productImageUrl
+                          ? `${BASE_URL}uploads/${encodeURIComponent(
+                              item.Product.productImageUrl
+                            )}`
+                          : "/default.png"
+                      }
                       alt=""
                     />
                     <div className="flex w-full flex-col px-4 py-4">
@@ -293,6 +301,7 @@ const CheckOut = () => {
           </div>
         </form>
       </div>
+      <Footer />
     </>
   );
 };
