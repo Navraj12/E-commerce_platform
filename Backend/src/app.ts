@@ -1,44 +1,83 @@
-import dotenv from "dotenv";
 import express, { Application } from "express";
-import "./database/connection";
-import userRoute from "./routes/userRoute";
-// import './model/index';
-import cors from "cors";
-import path from "path";
-import cartRoute from "./routes/cartRoute";
-import CategoryRoute from "./routes/categoryRoute";
-import orderRoute from "./routes/orderRoute";
-import productRoute from "./routes/productRoute";
-dotenv.config();
 
 const app: Application = express();
-const PORT = process.env.PORT || 5000;
+const PORT: number = 3000;
 
-// app.get('/', (req: Request, res: Response) => {
-//   res.send('Hello World');
-// });
+import * as dotenv from "dotenv";
+import "./database/connection";
+dotenv.config();
 
-// app.get('/about', (req: Request, res: Response) => {
-//   res.send('About Page');
-// });
-app.use(express.json());
+import cors from "cors";
+import jwt from "jsonwebtoken";
+import { Server } from "socket.io";
+import { promisify } from "util";
+import adminSeeder from "./adminseeder";
+import categoryController from "./controllers/categoryController";
+import User from "./database/models/User";
+import cartRoute from "./routes/cartRoute";
+import categoryRoute from "./routes/categoryRoute";
+import orderRoute from "./routes/orderRoute";
+import productRoute from "./routes/productRoute";
+import userRoute from "./routes/userRoute";
+
 app.use(
   cors({
     origin: "*",
   })
 );
-//admin seeder
-// adminSeeder();
+app.use(express.json());
 
-app.use("/", userRoute);
+// admin seeder
+adminSeeder();
+
+// localhost:3000/register
+//localhost:3000/hello/register
+app.use("", userRoute);
 app.use("/admin/product", productRoute);
-app.use("/admin/category", CategoryRoute);
+app.use("/admin/category", categoryRoute);
 app.use("/customer/cart", cartRoute);
 app.use("/order", orderRoute);
-app.use("/uploads", express.static(path.join(__dirname, "../src/uploads")));
-path.join(__dirname, "../src/uploads");
 
-app.listen(PORT, () => {
-  // categoryController.seedCategory();
-  console.log("server is running on port", PORT);
+const server = app.listen(PORT, () => {
+  categoryController.seedCategory();
+  console.log("Server has started at port ", PORT);
 });
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:5173", "http://localhost:5174"],
+  },
+});
+
+let onlineUsers: any = [];
+const addToOnlineUsers = (socketId: string, userId: string, role: string) => {
+  onlineUsers = onlineUsers.filter((user: any) => user.userId !== userId);
+  onlineUsers.push({ socketId, userId, role });
+};
+io.on(
+  "connection",
+  async (socket) => {
+    console.log("A client connected");
+    const token = socket.handshake.auth?.token;
+    if (token) {
+      //@ts-ignore
+      const decoded = jwt.verify(
+        token,
+        process.env.SECRET_KEY as string
+      );
+      //@ts-ignore
+      const doesUserExists = await User.findByPk(decoded.id);
+      if (doesUserExists) {
+        addToOnlineUsers(socket.id, doesUserExists.id, doesUserExists.role);
+      }
+    }
+    socket.on("updatedOrderStatus", ({ status, orderId, userId }) => {
+      const findUser = onlineUsers.find((user: any) => user.userId == userId);
+      if (findUser) {
+        io.to(findUser.socketId).emit("statusUpdated", { status, orderId });
+      }
+    });
+    console.log(onlineUsers);
+  }
+);
+
+// sudo /Applications/XAMPP/xamppfiles/xampp start

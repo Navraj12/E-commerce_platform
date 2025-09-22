@@ -19,6 +19,5 @@ const adminSeeder = async (): Promise<void> => {
     console.log("Admin credentials already seeded");
   }
 };
- 
+
 export default adminSeeder;
- 
