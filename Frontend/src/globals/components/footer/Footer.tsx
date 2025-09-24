@@ -39,7 +39,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                pixelcave
+                pixelate
               </a>
             </span>
           </div>

@@ -14,7 +14,7 @@ const Navbar = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token || !!user?.token);
-    dispatch(fetchCartItems);
+    dispatch(fetchCartItems());
   }, [dispatch, user?.token]);
 
   const handleLogout = () => {
