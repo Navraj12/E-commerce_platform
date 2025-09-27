@@ -1,23 +1,20 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Footer from "../../globals/components/footer/Footer";
 import Navbar from "../../globals/components/navbar/Navbar";
 import {
-  PaymentMethod,
   type ItemDetails,
   type OrderData,
+  PaymentMethod,
 } from "../../globals/types/checkOutTypes";
 import { Status } from "../../globals/types/types";
-import { BASE_URL } from "../../http";
 import { orderItem } from "../../store/checkoutSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
-const CheckOut = () => {
+const Checkout = () => {
   const { items } = useAppSelector((state) => state.carts);
   const { khaltiUrl, status } = useAppSelector((state) => state.orders);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
     PaymentMethod.COD
   );
@@ -30,17 +27,15 @@ const CheckOut = () => {
     },
     items: [],
   });
-
   const handlePaymentMethod = (e: ChangeEvent<HTMLInputElement>) => {
     setPaymentMethod(e.target.value as PaymentMethod);
     setData({
       ...data,
       paymentDetails: {
-        paymentMethod,
+        paymentMethod: e.target.value as PaymentMethod,
       },
     });
   };
-
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setData({
@@ -48,12 +43,10 @@ const CheckOut = () => {
       [name]: value,
     });
   };
-
   const subtotal = items.reduce(
     (total, item) => item.Product.productPrice * item.quantity + total,
     0
   );
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const itemDetails: ItemDetails[] = items.map((item) => {
@@ -69,25 +62,25 @@ const CheckOut = () => {
       totalAmount: subtotal,
     };
     await dispatch(orderItem(orderData));
-    if (status === Status.SUCCESS) {
-      alert("Order placed successfully");
-    }
-
-    if (khaltiUrl) {
-      window.location.href = khaltiUrl;
-    }
+    // if(status === Status.SUCCESS){
+    //   alert("Order Placed successfully")
+    // }
   };
   useEffect(() => {
+    if (khaltiUrl) {
+      window.location.href = khaltiUrl;
+      return;
+    }
     if (status === Status.SUCCESS) {
-      alert("Order placed successfully");
+      alert("Order Placed successfully");
       navigate("/");
     }
-  }, [status, navigate]);
+  }, [status, khaltiUrl, navigate]);
 
   return (
     <>
       <Navbar />
-      <div className="flex flex-col items-center border-b bg-white py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32">
+      <div className="flex flex-col items-center border-b bg-white mt-[-100px] py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32">
         <div className="mt-4 py-7 text-xs sm:mt-0 sm:ml-auto sm:text-base"></div>
       </div>
       <div className="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
@@ -100,28 +93,24 @@ const CheckOut = () => {
             {items.length > 0 &&
               items.map((item) => {
                 return (
-                  <div className="flex flex-col rounded-lg bg-white sm:flex-row">
+                  <div
+                    key={item?.Product?.id}
+                    className="flex flex-col rounded-lg bg-white sm:flex-row"
+                  >
                     <img
                       className="m-2 h-24 w-28 rounded-md border object-cover object-center"
-                      src={
-                        item?.Product?.productImageUrl
-                          ? `${BASE_URL}uploads/${encodeURIComponent(
-                              item.Product.productImageUrl
-                            )}`
-                          : "/default.png"
-                      }
+                      src="https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
                       alt=""
                     />
                     <div className="flex w-full flex-col px-4 py-4">
                       <span className="font-semibold">
-                        {" "}
-                        {item?.Product?.productName}{" "}
+                        {item?.Product?.productName}
                       </span>
                       <span className="float-right text-gray-400">
                         Qty :{item?.quantity}{" "}
                       </span>
                       <p className="text-lg font-bold">
-                        Rs.{item?.Product?.productPrice}{" "}
+                        Rs. {item?.Product?.productPrice}{" "}
                       </p>
                     </div>
                   </div>
@@ -130,7 +119,7 @@ const CheckOut = () => {
           </div>
 
           <p className="mt-8 text-lg font-medium">Payment Methods</p>
-          <form className="mt-5 grid gap-6" onSubmit={handleSubmit}>
+          <form className="mt-5 grid gap-6">
             <div className="relative">
               <input
                 className="peer hidden"
@@ -162,7 +151,7 @@ const CheckOut = () => {
                 className="peer hidden"
                 id="radio_2"
                 type="radio"
-                value={PaymentMethod.COD}
+                value={PaymentMethod.Khalti}
                 onChange={handlePaymentMethod}
                 name="radio"
               />
@@ -183,45 +172,13 @@ const CheckOut = () => {
             </div>
           </form>
         </div>
-        <form noValidate>
+        <form noValidate onSubmit={handleSubmit}>
           <div className="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0">
             <p className="text-xl font-medium">Payment Details</p>
             <p className="text-gray-400">
               Complete your order by providing your payment details.
             </p>
             <div className="">
-              <label
-                htmlFor="email"
-                className="mt-4 mb-2 block text-sm font-medium"
-              >
-                Email
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  id="email"
-                  name="email"
-                  className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="your.email@gmail.com"
-                />
-
-                <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                    />
-                  </svg>
-                </div>
-              </div>
               <label
                 htmlFor="phoneNumber"
                 className="mt-4 mb-2 block text-sm font-medium"
@@ -237,8 +194,6 @@ const CheckOut = () => {
                   onChange={handleChange}
                   placeholder="Your Phone Number"
                 />
-
-                <p></p>
               </div>
 
               <label
@@ -254,10 +209,9 @@ const CheckOut = () => {
                     id="billing-address"
                     name="shippingAddress"
                     className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                    onChange={handleChange}
                     placeholder="Street Address"
+                    onChange={handleChange}
                   />
-                  <p></p>
                   <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
                     <img
                       className="h-4 w-4 object-contain"
@@ -271,7 +225,7 @@ const CheckOut = () => {
               <div className="mt-6 border-t border-b py-2">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-gray-900">Subtotal</p>
-                  <p className="font-semibold text-gray-900">Rs {subtotal} </p>
+                  <p className="font-semibold text-gray-900">Rs {subtotal}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-gray-900">Shipping</p>
@@ -294,16 +248,18 @@ const CheckOut = () => {
                 Pay With Khalti
               </button>
             ) : (
-              <button className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">
+              <button
+                type="submit"
+                className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white"
+              >
                 Place Order
               </button>
             )}
           </div>
         </form>
       </div>
-      <Footer />
     </>
   );
 };
 
-export default CheckOut;
+export default Checkout;
