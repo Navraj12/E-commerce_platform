@@ -1,38 +1,25 @@
-// import { data } from "react-router-dom";
-// import axios from "axios";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Status } from "../../../globals/types/types";
 import { register, resetStatus } from "../../../store/authSlice";
-import { useAppSelector } from "../../../store/hooks";
-import type { AppDispatch } from "../../../store/store";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import Form from "../Form";
 import type { UserDataType } from "../types";
 
 const Register = () => {
   const navigate = useNavigate();
-  const { status } = useAppSelector((state) => state.auth); // ✅ also grab error
-  const dispatch = useDispatch<AppDispatch>();
-
+  const { status } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const handleRegister = async (data: UserDataType) => {
-    await dispatch(register(data));
+    dispatch(register(data));
   };
-
   useEffect(() => {
     if (status === Status.SUCCESS) {
       dispatch(resetStatus());
       navigate("/login");
     }
-
-    if (status === Status.ERROR && Error) {
-      // ✅ show real backend error
-      alert(Error);
-      dispatch(resetStatus());
-    }
-  }, [dispatch, navigate, status]);
-
-  return <Form isRegister={true} onSubmit={handleRegister} />;
+  }, [status, navigate, dispatch]);
+  return <Form onSubmit={handleRegister} type="register" />;
 };
 
 export default Register;
