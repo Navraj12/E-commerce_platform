@@ -15,6 +15,7 @@ export enum OrderStatus {
   Cancelled = "cancelled",
   Preparation = "preparation",
   All = "all",
+  Cancel = "Cancel",
 }
 
 export interface ItemDetails {

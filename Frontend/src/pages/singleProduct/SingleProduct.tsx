@@ -9,12 +9,13 @@ const SingleProduct = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const { singleProduct } = useAppSelector((state) => state.products);
+  console.log(singleProduct);
   useEffect(() => {
     if (id) {
+      console.log("triggered", id);
       dispatch(fetchByProductId(id));
     }
   }, [dispatch, id]);
-
   const handleAddToCart = () => {
     if (id && singleProduct) {
       dispatch(addToCart(id));
@@ -23,6 +24,7 @@ const SingleProduct = () => {
   return (
     <>
       <Navbar />
+
       <div className="bg-gray-100 dark:bg-gray-800 py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row -mx-4">
@@ -37,8 +39,8 @@ const SingleProduct = () => {
               <div className="flex -mx-2 mb-4">
                 <div className="w-1/2 px-2">
                   <button
-                    onClick={handleAddToCart}
                     className="w-full bg-gray-900 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700"
+                    onClick={handleAddToCart}
                   >
                     Add to Cart
                   </button>
@@ -54,9 +56,7 @@ const SingleProduct = () => {
               <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
                 {singleProduct?.productName}
               </h2>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                {singleProduct?.productDescription}
-              </p>
+
               <div className="flex mb-4">
                 <div className="mr-4">
                   <span className="font-bold text-gray-700 dark:text-gray-300">
@@ -80,22 +80,10 @@ const SingleProduct = () => {
                   Select Color:
                 </span>
                 <div className="flex items-center mt-2">
-                  <button
-                    aria-label="Start recording"
-                    className="w-6 h-6 rounded-full bg-gray-800 dark:bg-gray-200 mr-2"
-                  ></button>
-                  <button
-                    aria-label="Start recording"
-                    className="w-6 h-6 rounded-full bg-red-500 dark:bg-red-700 mr-2"
-                  ></button>
-                  <button
-                    aria-label="Start recording"
-                    className="w-6 h-6 rounded-full bg-blue-500 dark:bg-blue-700 mr-2"
-                  ></button>
-                  <button
-                    aria-label="Start recording"
-                    className="w-6 h-6 rounded-full bg-yellow-500 dark:bg-yellow-700 mr-2"
-                  ></button>
+                  <button className="w-6 h-6 rounded-full bg-gray-800 dark:bg-gray-200 mr-2"></button>
+                  <button className="w-6 h-6 rounded-full bg-red-500 dark:bg-red-700 mr-2"></button>
+                  <button className="w-6 h-6 rounded-full bg-blue-500 dark:bg-blue-700 mr-2"></button>
+                  <button className="w-6 h-6 rounded-full bg-yellow-500 dark:bg-yellow-700 mr-2"></button>
                 </div>
               </div>
               <div className="mb-4">

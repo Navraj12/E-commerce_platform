@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../../globals/components/navbar/Navbar";
 import { OrderStatus } from "../../../globals/types/checkOutTypes";
-import { fetchMyOrders } from "../../../store/checkoutSlice";
+import fetchMyOrders, {
+  default as updateOrderStatusInStore,
+} from "../../../store/checkoutSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+// import the correct socket instance, not the default export from App
+import { socket } from "../../../App";
 
 const MyOrders = () => {
   const dispatch = useAppDispatch();
@@ -12,13 +16,10 @@ const MyOrders = () => {
     OrderStatus.All
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
-
   const [date, setDate] = useState<string>("");
-
   useEffect(() => {
     dispatch(fetchMyOrders());
-  });
-
+  }, [dispatch]);
   const filteredOrders = myOrders
     .filter(
       (order) =>
@@ -28,12 +29,7 @@ const MyOrders = () => {
       (order) =>
         order.id.toLowerCase().includes(searchTerm) ||
         order.Payment.paymentMethod.toLowerCase().includes(searchTerm) ||
-        order.totalAmount.toString().includes(searchTerm) ||
-        order.createdAt.toLowerCase().includes(searchTerm) ||
-        order.Payment.paymentStatus.toLowerCase().includes(searchTerm) ||
-        order.orderStatus.toLowerCase().includes(searchTerm) ||
-        order.userId.username.toLowerCase().includes(searchTerm) ||
-        order.userId.email.toLowerCase().includes(searchTerm)
+        order.totalAmount.toString().includes(searchTerm)
     )
     .filter(
       (order) =>
@@ -41,15 +37,22 @@ const MyOrders = () => {
         new Date(order.createdAt).toLocaleDateString() ===
           new Date(date).toLocaleDateString()
     );
-
+  useEffect(() => {
+    socket.on("statusUpdated", (data: any) => {
+      // Assuming updateOrderStatusInStore is an action creator that takes the payload as the first argument
+      return dispatch(updateOrderStatusInStore(data, undefined));
+    });
+  }, [dispatch]);
   return (
     <>
       <Navbar />
-      <div className="antialiased font-sans bg-gray-200 pt-20">
+      <div className="antialiased font-sans bg-gray-200 pt-2">
         <div className="container mx-auto px-4 sm:px-8">
-          <div className="py-8">
+          <div>
             <div>
-              <h2 className="text-2xl font-semibold leading-tight">Orders</h2>
+              <h2 className="text-2xl font-semibold leading-tight">
+                My Orders
+              </h2>
             </div>
             <div className="my-2 flex sm:flex-row flex-col">
               <div className="flex flex-row mb-1 sm:mb-0">
@@ -64,7 +67,7 @@ const MyOrders = () => {
                     <option value={OrderStatus.Pending}>pending</option>
                     <option value={OrderStatus.Delivered}>delivered</option>
                     <option value={OrderStatus.Ontheway}>ontheway</option>
-                    <option value={OrderStatus.Cancelled}>cancelled</option>
+                    <option value={OrderStatus.Cancel}>cancelled</option>
                     <option value={OrderStatus.Preparation}>preparation</option>
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -133,36 +136,32 @@ const MyOrders = () => {
                         return (
                           <tr>
                             {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <div className="flex items-center">
-                                            <div className="flex-shrink-0 w-10 h-10">
-                                                <img className="w-full h-full rounded-full"
-                                                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-                                                    alt="" />
+                                            <div className="flex items-center">
+                                                <div className="flex-shrink-0 w-10 h-10">
+                                                    <img className="w-full h-full rounded-full"
+                                                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
+                                                        alt="" />
+                                                </div>
+                                                <div className="ml-3">
+                                                    <p className="text-gray-900 whitespace-no-wrap">
+                                                        {order.orderName}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div className="ml-3">
-                                                <p className="text-gray-900 whitespace-no-wrap">
-                                                    {order.orderName}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td> */}
-
-                            <Link to={`/myOrders/${order.id}`}>
-                              <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        </td> */}
+                            <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                              <Link to={`/myorders/${order.id}`}>
                                 <p
                                   className="text-blue-900 whitespace-no-wrap"
                                   style={{ textDecoration: "underline" }}
                                 >
-                                  {" "}
-                                  {order.id}{" "}
+                                  {order.id}
                                 </p>
-                              </td>
-                            </Link>
-
+                              </Link>
+                            </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
-                                {" "}
-                                {order.totalAmount}{" "}
+                                {order.totalAmount}
                               </p>
                             </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -178,15 +177,13 @@ const MyOrders = () => {
                                   className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
                                 ></span>
                                 <span className="relative">
-                                  {" "}
-                                  {order.orderStatus}{" "}
+                                  {order.orderStatus}
                                 </span>
                               </span>
                             </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
-                                {" "}
-                                {order.createdAt}{" "}
+                                {new Date(order.createdAt).toLocaleDateString()}
                               </p>
                             </td>
                           </tr>
