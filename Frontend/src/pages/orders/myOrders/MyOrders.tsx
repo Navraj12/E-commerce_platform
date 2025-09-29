@@ -6,8 +6,8 @@ import fetchMyOrders, {
   default as updateOrderStatusInStore,
 } from "../../../store/checkoutSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-// import the correct socket instance, not the default export from App
-import socket from "../../../App";
+// import the correct socket instance, adjust the path as needed
+import socket from "../../../globals/socket"; 
 
 const MyOrders = () => {
   const dispatch = useAppDispatch();

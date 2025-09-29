@@ -1,6 +1,4 @@
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { createSlice } from "@reduxjs/toolkit";
-import type {} from "@reduxjs/toolkit/query";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Product, ProductState } from "../globals/types/productTypes";
 import { Status } from "../globals/types/types";
 import { API } from "../http";
@@ -8,7 +6,7 @@ import type { AppDispatch, RootState } from "./store";
 
 const initialState: ProductState = {
   product: [],
-  status: "loading",
+  status: Status.LOADING,
   singleProduct: null,
 };
 
@@ -32,10 +30,11 @@ export const { setProduct, setStatus, setSingleProduct } = productSlice.actions;
 export default productSlice.reducer;
 
 export function fetchProducts() {
-  return async function fetchProductThunk(dispatch: AppDispatch) {
+  return async function fetchProductsThunk(dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
     try {
       const response = await API.get("admin/product");
+      console.log(response);
       if (response.status === 200) {
         const { data } = response.data;
         dispatch(setStatus(Status.SUCCESS));
@@ -43,7 +42,8 @@ export function fetchProducts() {
       } else {
         dispatch(setStatus(Status.ERROR));
       }
-    } catch {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       dispatch(setStatus(Status.ERROR));
     }
   };
@@ -72,7 +72,8 @@ export function fetchByProductId(productId: string) {
         } else {
           dispatch(setStatus(Status.ERROR));
         }
-      } catch {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
         dispatch(setStatus(Status.ERROR));
       }
     }

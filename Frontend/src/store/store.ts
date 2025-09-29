@@ -3,6 +3,7 @@ import authSlice from "./authSlice";
 import cartSlice from "./cartSlice";
 import checkoutSlice from "./checkoutSlice";
 import productSlice from "./productSlice";
+
 const store = configureStore({
   reducer: {
     auth: authSlice,
@@ -13,5 +14,5 @@ const store = configureStore({
 });
 
 export default store;
-export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;

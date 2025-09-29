@@ -1,24 +1,23 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type {
-  MyOrderData,
-  OrderData,
-  OrderDetails,
-  OrderResponseData,
-  OrderResponseItem,
-} from "../globals/types/checkOutTypes";
+import { createSlice,type PayloadAction } from "@reduxjs/toolkit";
+import {
+  type MyOrderData,
+  type OrderData,
+  type OrderDetails,
+  type OrderResponseData,
+  type OrderResponseItem,
+  OrderStatus,
+} from "../globals/types/checkoutTypes";
 import { Status } from "../globals/types/types";
 import { APIAuthenticated } from "../http";
-import { setStatus } from "./authSlice";
 import type { AppDispatch } from "./store";
-// import { setStatus } from "./authSlice"; // Renamed or removed to avoid conflict
 
 const initialState: OrderResponseData = {
-  state: {} as MyOrderData,
   items: [],
   status: Status.LOADING,
   khaltiUrl: null,
   myOrders: [],
   orderDetails: [],
+  state: {} as MyOrderData
 };
 
 const orderSlice = createSlice({
@@ -31,14 +30,12 @@ const orderSlice = createSlice({
     ) {
       state.items.push(action.payload);
     },
-
     setMyOrders(
       state: OrderResponseData,
       action: PayloadAction<MyOrderData[]>
     ) {
       state.myOrders = action.payload;
     },
-
     setStatus(state: OrderResponseData, action: PayloadAction<Status>) {
       state.status = action.payload;
     },
@@ -48,21 +45,33 @@ const orderSlice = createSlice({
     ) {
       state.khaltiUrl = action.payload;
     },
-    setOrderDetails(
+    setMyOrderDetails(
       state: OrderResponseData,
       action: PayloadAction<OrderDetails[]>
     ) {
       state.orderDetails = action.payload;
+    },
+    updateOrderStatus(
+      state: OrderResponseData,
+      action: PayloadAction<{ status: OrderStatus; orderId: string }>
+    ) {
+      const status = action.payload.status;
+      const orderId = action.payload.orderId;
+      const updatedOrder = state.myOrders.map((order) =>
+        order.id == orderId ? { ...order, orderStatus: status } : order
+      );
+      state.myOrders = updatedOrder;
     },
   },
 });
 
 export const {
   setItems,
-  setStatus: setOrderStatus,
+  setStatus,
   setKhaltiUrl,
   setMyOrders,
-  setOrderDetails,
+  setMyOrderDetails,
+  updateOrderStatus,
 } = orderSlice.actions;
 export default orderSlice.reducer;
 
@@ -82,7 +91,7 @@ export function orderItem(data: OrderData) {
       } else {
         dispatch(setStatus(Status.ERROR));
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
     }
@@ -90,17 +99,17 @@ export function orderItem(data: OrderData) {
 }
 
 export function fetchMyOrders() {
-  return async function fetchMyOrderThunk(dispatch: AppDispatch) {
+  return async function fetchMyOrdersThunk(dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await APIAuthenticated.post("/order/customer");
+      const response = await APIAuthenticated.get("/order/customer");
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setMyOrders(response.data.data));
       } else {
         dispatch(setStatus(Status.ERROR));
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
     }
@@ -111,16 +120,39 @@ export function fetchMyOrderDetails(id: string) {
   return async function fetchMyOrderDetailsThunk(dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await APIAuthenticated.post("/order/customer/" + id);
+      const response = await APIAuthenticated.get("/order/customer/" + id);
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
-        dispatch(setOrderDetails(response.data.data));
+        dispatch(setMyOrderDetails(response.data.data));
       } else {
         dispatch(setStatus(Status.ERROR));
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
     }
+  };
+}
+
+export function cancelMyOrder(id: string) {
+  return async function cancelMyOrderThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.patch("/order/customer/" + id);
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function updateOrderStatusInStore(data: { status: OrderStatus; orderId: string }) {
+  return function updateOrderStatusInStoreThunk(dispatch: AppDispatch) {
+    dispatch(updateOrderStatus(data));
   };
 }
