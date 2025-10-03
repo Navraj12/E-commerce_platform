@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../../globals/components/navbar/Navbar";
-import { OrderStatus } from "../../../globals/types/checkOutTypes";
+import { OrderStatus } from "../../../globals/types/checkoutTypes";
 import fetchMyOrders, {
   default as updateOrderStatusInStore,
 } from "../../../store/checkoutSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 // import the correct socket instance, adjust the path as needed
-import socket from "../../../globals/socket"; 
+import socket from "../../../socket";
 
 const MyOrders = () => {
   const dispatch = useAppDispatch();
