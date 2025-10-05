@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { type CartItem, type CartState } from "../globals/types/cartTypes";
 import { Status } from "../globals/types/types";
 import { APIAuthenticated } from "../http";
-import { type AppDispatch } from "./store";
+import type { AppDispatch } from "./store";
 
 const initialState: CartState = {
   items: [],

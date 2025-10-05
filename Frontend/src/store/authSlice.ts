@@ -74,7 +74,7 @@ import type { RootState } from "./store"; // Adjust the import path as needed
 
 export function login(data: LoginData) {
   return async function loginThunk(
-    dispatch: ThunkDispatch<RootState, unknown, PayloadAction<any>>
+    dispatch: ThunkDispatch<RootState, unknown, PayloadAction<string>>
   ) {
     dispatch(setStatus(Status.LOADING));
     try {
