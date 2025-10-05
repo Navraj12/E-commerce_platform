@@ -21,7 +21,7 @@ const MyOrdersDetails = () => {
 
   const handleCancelOrder = async () => {
     if (id) {
-      await dispatch(cancelMyOrder({ id, status: OrderStatus.Cancel }));
+      await dispatch(cancelMyOrder(id));
       await dispatch(fetchMyOrderDetails(id));
       // navigate("/myorders")
     }

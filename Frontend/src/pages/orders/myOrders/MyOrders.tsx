@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../../globals/components/navbar/Navbar";
-import { OrderStatus } from "../../../globals/types/checkoutTypes";
-import fetchMyOrders, {
-  default as updateOrderStatusInStore,
-} from "../../../store/checkoutSlice";
+import { OrderStatus } from "../../../globals/types/checkOutTypes";
+// import  fetchMyOrders, {
+//   default as updateOrderStatusInStore,
+// } from "../../../store/checkoutSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 // import the correct socket instance, adjust the path as needed
-import socket from "../../../socket";
+
+import { Socket } from "socket.io-client";
+import {
+  fetchMyOrders,
+  updateOrderStatusInStore,
+} from "../../../store/checkoutSlice";
 
 const MyOrders = () => {
   const dispatch = useAppDispatch();
@@ -38,9 +43,10 @@ const MyOrders = () => {
           new Date(date).toLocaleDateString()
     );
   useEffect(() => {
-    socket.on("statusUpdated", (data: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Socket.on("statusUpdated", (data: any) => {
       // Assuming updateOrderStatusInStore is an action creator that takes the payload as the first argument
-      return dispatch(updateOrderStatusInStore(data, undefined));
+      return dispatch(updateOrderStatusInStore(data));
     });
   }, [dispatch]);
   return (

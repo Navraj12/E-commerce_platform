@@ -1,12 +1,12 @@
-import { createSlice,type PayloadAction } from "@reduxjs/toolkit";
-import {
-  type MyOrderData,
-  type OrderData,
-  type OrderDetails,
-  type OrderResponseData,
-  type OrderResponseItem,
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type {
+  MyOrderData,
+  OrderData,
+  OrderDetails,
+  OrderResponseData,
+  OrderResponseItem,
   OrderStatus,
-} from "../globals/types/checkoutTypes";
+} from "../globals/types/checkOutTypes";
 import { Status } from "../globals/types/types";
 import { APIAuthenticated } from "../http";
 import type { AppDispatch } from "./store";
@@ -17,7 +17,7 @@ const initialState: OrderResponseData = {
   khaltiUrl: null,
   myOrders: [],
   orderDetails: [],
-  state: {} as MyOrderData
+  state: {} as MyOrderData,
 };
 
 const orderSlice = createSlice({
@@ -91,7 +91,7 @@ export function orderItem(data: OrderData) {
       } else {
         dispatch(setStatus(Status.ERROR));
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
     }
@@ -109,7 +109,7 @@ export function fetchMyOrders() {
       } else {
         dispatch(setStatus(Status.ERROR));
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
     }
@@ -127,7 +127,7 @@ export function fetchMyOrderDetails(id: string) {
       } else {
         dispatch(setStatus(Status.ERROR));
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
     }
@@ -144,14 +144,17 @@ export function cancelMyOrder(id: string) {
       } else {
         dispatch(setStatus(Status.ERROR));
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
     }
   };
 }
 
-export function updateOrderStatusInStore(data: { status: OrderStatus; orderId: string }) {
+export function updateOrderStatusInStore(data: {
+  status: OrderStatus;
+  orderId: string;
+}) {
   return function updateOrderStatusInStoreThunk(dispatch: AppDispatch) {
     dispatch(updateOrderStatus(data));
   };
