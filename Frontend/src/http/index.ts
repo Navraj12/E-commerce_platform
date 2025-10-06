@@ -39,8 +39,17 @@ const APIAuthenticated = axios.create({
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
-    Authorization: localStorage.getItem("token"),
+    // Authorization: localStorage.getItem("token"),
   },
+});
+
+// Intercept requests to add token dynamically
+APIAuthenticated.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export { API, APIAuthenticated };
