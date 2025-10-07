@@ -5,7 +5,7 @@ import {
   type ItemDetails,
   type OrderData,
   PaymentMethod,
-} from "../../globals/types/checkoutTypes";
+} from "../../globals/types/checkOutTypes";
 import { Status } from "../../globals/types/types";
 import { orderItem } from "../../store/checkoutSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
