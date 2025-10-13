@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Navbar from "../../globals/components/navbar/Navbar";
-import { addToCart } from "../../store/cartSlice";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { fetchByProductId } from "../../store/productSlice";
+import Navbar from "../../globals/components/navbar/Navbar.tsx";
+import { addToCart } from "../../store/cartSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../store/hooks.ts";
+import { fetchByProductId } from "../../store/productSlice.ts";
 
 const SingleProduct = () => {
   const { id } = useParams();

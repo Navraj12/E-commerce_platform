@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { fetchCartItems } from "../../../store/cartSlice";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { fetchCartItems } from "../../../store/cartSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
 
 const Navbar = () => {
   const navigate = useNavigate();

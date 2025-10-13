@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import Navbar from "../../globals/components/navbar/Navbar";
-import { deleteCartItem, updateCartItem } from "../../store/cartSlice";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import Navbar from "../../globals/components/navbar/Navbar.tsx";
+import { deleteCartItem, updateCartItem } from "../../store/cartSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../store/hooks.ts";
 
 const Cart = () => {
   const { items } = useAppSelector((state) => state.carts);

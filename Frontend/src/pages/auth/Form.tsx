@@ -1,6 +1,6 @@
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
-import type { Props, UserDataType } from "./types";
+import type { Props, UserDataType } from "./types.ts";
 
 const Form: React.FC<Props> = ({ type, onSubmit }) => {
   const [userData, setUserData] = useState<UserDataType>({

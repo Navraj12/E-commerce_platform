@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Status } from "../../../globals/types/types";
-import { login, resetStatus } from "../../../store/authSlice";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import Form from "../Form";
-import type { UserLoginType } from "../types";
+import { Status } from "../../../globals/types/types.ts";
+import { login, resetStatus } from "../../../store/authSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
+import Form from "../Form.tsx";
+import type { UserLoginType } from "../types.ts";
 
 const Login = () => {
   const navigate = useNavigate();

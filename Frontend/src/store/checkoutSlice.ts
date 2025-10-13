@@ -6,10 +6,10 @@ import type {
   OrderResponseData,
   OrderResponseItem,
   OrderStatus,
-} from "../globals/types/checkOutTypes";
-import { Status } from "../globals/types/types";
-import { APIAuthenticated } from "../http";
-import type { AppDispatch } from "./store";
+} from "../globals/types/checkOutTypes.ts";
+import { Status } from "../globals/types/types.ts";
+import { APIAuthenticated } from "../http/index.ts";
+import type { AppDispatch } from "./store.ts";
 
 const initialState: OrderResponseData = {
   items: [],

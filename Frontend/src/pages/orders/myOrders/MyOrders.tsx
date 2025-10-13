@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../../../globals/components/navbar/Navbar";
-import { OrderStatus } from "../../../globals/types/checkOutTypes";
+import Navbar from "../../../globals/components/navbar/Navbar.tsx";
+import { OrderStatus } from "../../../globals/types/checkOutTypes.ts";
 // import  fetchMyOrders, {
 //   default as updateOrderStatusInStore,
 // } from "../../../store/checkoutSlice";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
 // import the correct socket instance, adjust the path as needed
 
 import { Socket } from "socket.io-client";
 import {
   fetchMyOrders,
   updateOrderStatusInStore,
-} from "../../../store/checkoutSlice";
+} from "../../../store/checkoutSlice.ts";
 
 const MyOrders = () => {
   const dispatch = useAppDispatch();

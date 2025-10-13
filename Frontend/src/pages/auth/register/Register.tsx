@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Status } from "../../../globals/types/types";
-import { register, resetStatus } from "../../../store/authSlice";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import Form from "../Form";
-import type { UserDataType } from "../types";
+import { Status } from "../../../globals/types/types.ts";
+import { register, resetStatus } from "../../../store/authSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
+import Form from "../Form.tsx";
+import type { UserDataType } from "../types.ts";
 
 const Register = () => {
   const navigate = useNavigate();

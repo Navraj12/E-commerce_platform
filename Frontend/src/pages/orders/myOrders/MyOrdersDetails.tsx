@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Navbar from "../../../globals/components/navbar/Navbar";
-import { OrderStatus } from "../../../globals/types/checkOutTypes";
+import Navbar from "../../../globals/components/navbar/Navbar.tsx";
+import { OrderStatus } from "../../../globals/types/checkOutTypes.ts";
 import {
   cancelMyOrder,
   fetchMyOrderDetails,
-} from "../../../store/checkoutSlice";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+} from "../../../store/checkoutSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
 
 const MyOrdersDetails = () => {
   const { id } = useParams();

@@ -1,14 +1,14 @@
 import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../globals/components/navbar/Navbar";
+import Navbar from "../../globals/components/navbar/Navbar.tsx";
 import {
   type ItemDetails,
   type OrderData,
   PaymentMethod,
-} from "../../globals/types/checkOutTypes";
-import { Status } from "../../globals/types/types";
-import { orderItem } from "../../store/checkoutSlice";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
+} from "../../globals/types/checkOutTypes.ts";
+import { Status } from "../../globals/types/types.ts";
+import { orderItem } from "../../store/checkoutSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../store/hooks.ts";
 
 const Checkout = () => {
   const { items } = useAppSelector((state) => state.carts);

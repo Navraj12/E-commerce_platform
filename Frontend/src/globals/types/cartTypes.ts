@@ -1,5 +1,5 @@
-import type { Product } from "./productTypes";
-import type { Status } from "./types";
+import type { Product } from "./productTypes.ts";
+import type { Status } from "./types.ts";
 
 export interface CartItem {
   Product: Product;

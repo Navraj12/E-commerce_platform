@@ -1,4 +1,4 @@
-import Navbar from "../../../globals/components/navbar/Navbar";
+import Navbar from "../../../globals/components/navbar/Navbar.tsx";
 
 const Hero = () => {
   return (

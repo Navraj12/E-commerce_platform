@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import type { Product } from "../../types/productTypes";
+import type { Product } from "../../types/productTypes.ts";
 
 interface CardProps {
   data: Product;

@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import Card from "../../globals/components/card/Card";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { fetchProducts } from "../../store/productSlice";
-import Hero from "./components/Hero";
+import Card from "../../globals/components/card/Card.tsx";
+import { useAppDispatch, useAppSelector } from "../../store/hooks.ts";
+import { fetchProducts } from "../../store/productSlice.ts";
+import Hero from "./components/Hero.tsx";
 
 const Home = () => {
   const dispatch = useAppDispatch();
