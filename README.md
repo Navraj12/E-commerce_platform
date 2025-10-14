@@ -16,15 +16,15 @@ Admin Dashboard: Manage products, categories, and orders.
 
 Tech Stack
 
-Frontend: HTML, CSS, JavaScript
+Frontend: React+Vite, Tailwind CSS, Typescript
 
 Backend: Node.js with Express
 
-Database: MongoDB
+Database: Mysql
 
 Authentication: JWT (JSON Web Tokens)
 
-Payment Integration: Stripe (for handling payments)
+Payment Integration: khalti Integration
 
 
 Installation
@@ -76,6 +76,7 @@ Create a new Pull Request.
 Screenshot 
 
 <img width="1825" height="878" alt="{4DFE7497-B1DA-40D4-9A3C-A7DAFEEDE3FB}" src="https://github.com/user-attachments/assets/0e4f27f6-06a0-4cf0-b17a-c5cb86010663" />
+
 
 
 
