@@ -66,7 +66,7 @@ class OrderController {
     for (var i = 0; i < items.length; i++) {
       responseOrderData = await OrderDetail.create({
         quantity: items[i].quantity,
-        productId: items[0].productId,
+        productId: items[i].productId,
         orderId: orderData.id,
       });
       await Cart.destroy({
@@ -79,10 +79,10 @@ class OrderController {
     if (PaymentDetails.paymentMethod == PaymentMethod.Khalti) {
       //Khalti integration
       const data = {
-        return_url: "http://localhost:3000/success",
+        return_url: "http://localhost:5000/success",
         purchase_order_id: orderData.id,
         amount: totalAmount * 100,
-        website_url: "http://localhost:3000",
+        website_url: "http://localhost:000",
         purchase_order_name: "orderName_" + orderData.id,
       };
       const khaltiRes = await axios.post(
@@ -112,7 +112,7 @@ class OrderController {
 
   async verifyTransaction(req: AuthRequest, res: Response): Promise<void> {
     const { pidx } = req.body;
-    const userId = req.user?.id;
+    // const userId = req.user?.id;
     if (!pidx) {
       res.status(400).json({
         message: "please provide pidx",

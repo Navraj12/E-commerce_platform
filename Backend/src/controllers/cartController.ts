@@ -24,7 +24,6 @@ class CartController {
         message: "Please provide productId and quantity",
       });
     }
-    //check if the product is already in the cart
     let cartItem = await Cart.findOne({
       where: {
         userId,
@@ -32,11 +31,9 @@ class CartController {
       },
     });
     if (cartItem) {
-      //update the quantity
       cartItem.quantity += quantity;
       await cartItem.save();
     } else {
-      //create a new cart item
       cartItem = await Cart.create({
         userId,
         productId,
@@ -89,7 +86,6 @@ class CartController {
 
       return;
     }
-    //delete that productId from userCart
     await Cart.destroy({
       where: {
         userId,
