@@ -1,17 +1,17 @@
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-// import io from "socket.io-client";
-import Login from "./pages/auth/login/Login.tsx";
-import Register from "./pages/auth/register/Register.tsx";
-import Cart from "./pages/cart/Cart.tsx";
-import Checkout from "./pages/checkout/CheckOut.tsx";
-import Home from "./pages/home/Home.tsx";
-import MyOrders from "./pages/orders/myOrders/MyOrders.tsx";
-import MyOrdersDetails from "./pages/orders/myOrders/MyOrdersDetails.tsx";
-import SingleProduct from "./pages/singleProduct/SingleProduct.tsx";
-import store from "./store/store.ts";
+import Login from "./pages/auth/login/Login";
+import Register from "./pages/auth/register/Register";
+import Cart from "./pages/cart/Cart";
+import Checkout from "./pages/checkout/CheckOut";
+import Home from "./pages/home/Home";
+import MyOrders from "./pages/orders/myOrders/MyOrders";
+import MyOrdersDetails from "./pages/orders/myOrders/MyOrdersDetails";
+import SingleProduct from "./pages/singleProduct/SingleProduct";
+import socket from "./socket";
+import store from "./store/store";
 
-// Socket instance moved to src/socket.ts for Fast Refresh compatibility
+console.log("Socket connected:", socket.connected);
 
 function App() {
   return (
