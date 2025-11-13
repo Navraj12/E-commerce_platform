@@ -11,7 +11,7 @@ const Register = () => {
   const { status } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const handleRegister = async (data: UserDataType) => {
-    dispatch(register(data));
+    await dispatch(register(data));
   };
   useEffect(() => {
     if (status === Status.SUCCESS) {

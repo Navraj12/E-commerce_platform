@@ -63,6 +63,7 @@ class AuthMiddleware {
         } catch (error) {
           return res.status(500).json({ message: "Something went wrong" });
         }
+        console.log("Token verified successfully");
       }
     );
   }

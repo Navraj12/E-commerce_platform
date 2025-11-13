@@ -1,5 +1,6 @@
 import express, { Application } from "express";
 
+
 const app: Application = express();
 const PORT: number = 5000;
 
@@ -38,6 +39,10 @@ const server = app.listen(PORT, () => {
   categoryController.seedCategory();
   console.log("Server has started at port ", PORT);
 });
+
+
+
+
 // const io = new Server(server, {
 //   cors: {
 //     origin: ["http://localhost:5173", "http://localhost:5174"],
