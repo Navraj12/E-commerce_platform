@@ -39,9 +39,9 @@ class AuthMiddleware {
     }
 
     // Remove "Bearer " prefix
-    if (token.startsWith("Bearer ")) {
-      token = token.slice(7, token.length).trim();
-    }
+    // if (token.startsWith("Bearer ")) {
+    //   token = token.slice(7, token.length).trim();
+    // }
 
     jwt.verify(
       token,
