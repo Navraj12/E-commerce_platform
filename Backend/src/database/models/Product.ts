@@ -17,7 +17,7 @@ class Product extends Model {
   @Column({
     primaryKey: true,
     type: DataType.UUID,
-    defaultValue: DataType.UUIDV4, // Generates a new UUID for each product
+    defaultValue: DataType.UUIDV4,
   })
   declare id: string;
   @Column({

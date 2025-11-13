@@ -8,7 +8,7 @@ import { Column, DataType, Model, Table } from "sequelize-typescript";
 class Cart extends Model {
   @Column({
     primaryKey: true,
-    type: DataType.UUID,
+    type: DataType.UUID,  //(UUID-Universally Unique Identifier)
     defaultValue: DataType.UUIDV4, // Generates a new UUID for each product
   })
   declare id: string;

@@ -9,7 +9,7 @@ class Payment extends Model {
   @Column({
     primaryKey: true,
     type: DataType.UUID,
-    defaultValue: DataType.UUIDV4, // Generates a new UUID for each product
+    defaultValue: DataType.UUIDV4,
   })
   declare id: string;
   @Column({
@@ -21,7 +21,7 @@ class Payment extends Model {
   @Column({
     type: DataType.ENUM("pending", "paid", "unpaid"),
     allowNull: false,
-    defaultValue: "pending",
+    // defaultValue: "pending",
   })
   declare paymentStatus: string;
 

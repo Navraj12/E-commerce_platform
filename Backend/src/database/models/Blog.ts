@@ -9,7 +9,7 @@ class Blog extends Model {
     primaryKey: true,
     type: DataType.INTEGER,
   })
-  declare id: string;
+  declare id: number;
   @Column({
     type: DataType.STRING,
   })
