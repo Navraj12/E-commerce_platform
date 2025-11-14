@@ -56,9 +56,10 @@ export function register(data: RegisterData) {
   return async function registerThunk(dispatch: any) {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await API.post("register", data);
+      const response = await API.post("/register", data);
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
+        console.log("Registration successful", response.data);
       } else {
         dispatch(setStatus(Status.ERROR));
       }

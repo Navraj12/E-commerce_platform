@@ -13,10 +13,17 @@ class AuthController {
       });
       return;
     }
+    const userFound = await User.findOne({ where: { email } });
+    if (userFound) {
+      res.status(409).json({
+        message: "User with that email already exists",
+      });
+      return;
+    }
     await User.create({
       username,
       email,
-      password: await bcrypt.hash(password, 20),
+      password: await bcrypt.hash(password, 10),
     });
     res.status(200).json({
       message: "User registered successfully",

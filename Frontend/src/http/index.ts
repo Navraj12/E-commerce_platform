@@ -54,30 +54,23 @@
 
 // export { API, APIAuthenticated };
 
-
-
-
-import axios from 'axios'
+import axios from "axios";
 
 const API = axios.create({
-    baseURL : 'http://localhost:5000/',
-    headers : {
-        'Content-Type' : 'application/json',
-        'Accept' : 'application/json'
-    }
-})
+  baseURL: "http://localhost:5000",
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+});
 
 const APIAuthenticated = axios.create({
-    baseURL : 'http://localhost:5000/',
-    headers : {
-        'Content-Type' : 'application/json',
-        'Accept' : 'application/json',
-        'Authorization' : localStorage.getItem('token')
-    }
-})
+  baseURL: "http://localhost:5000",
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+});
 
-
-export  {
-    API,
-    APIAuthenticated
-}
+export { API, APIAuthenticated };

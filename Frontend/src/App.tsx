@@ -1,5 +1,6 @@
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import io from "socket.io-client";
 import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
 import Cart from "./pages/cart/Cart";
@@ -8,10 +9,14 @@ import Home from "./pages/home/Home";
 import MyOrders from "./pages/orders/myOrders/MyOrders";
 import MyOrdersDetails from "./pages/orders/myOrders/MyOrdersDetails";
 import SingleProduct from "./pages/singleProduct/SingleProduct";
-import socket from "./socket";
 import store from "./store/store";
 
-console.log("Socket connected:", socket.connected);
+// eslint-disable-next-line react-refresh/only-export-components
+export const socket = io("http://localhost:5000", {
+  auth: {
+    token: localStorage.getItem("token"),
+  },
+});
 
 function App() {
   return (
