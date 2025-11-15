@@ -71,7 +71,7 @@ export function register(data: RegisterData) {
 }
 
 import type { ThunkDispatch } from "@reduxjs/toolkit";
-import type { RootState } from "./store"; // Adjust the import path as needed
+import type { RootState } from "./store";
 
 export function login(data: LoginData) {
   return async function loginThunk(
@@ -79,7 +79,7 @@ export function login(data: LoginData) {
   ) {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await API.post("login", data);
+      const response = await API.post("/login", data);
       if (response.status === 200) {
         const { data } = response.data;
         dispatch(setStatus(Status.SUCCESS));
