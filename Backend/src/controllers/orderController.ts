@@ -50,6 +50,7 @@ class OrderController {
 
     const paymentData = await Payment.create({
       paymentMethod: PaymentDetails.paymentMethod,
+      paymentStatus: PaymentStatus.Pending,
     });
     // console.log(paymentData);
     const orderData = await Order.create({

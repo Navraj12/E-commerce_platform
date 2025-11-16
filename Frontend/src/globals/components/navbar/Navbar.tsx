@@ -16,6 +16,7 @@ const Navbar = () => {
     setIsLoggedIn(!!token || !!user?.token);
     dispatch(fetchCartItems());
   }, [dispatch, user?.token]);
+  console.log("Navbar items after fetch:", items);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -98,7 +99,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* <div className="lg:hidden">
+          <div className="lg:hidden">
             <nav className="flex flex-col gap-2 border-t border-gray-200 py-4 dark:border-gray-700">
               <a
                 href="#"
@@ -125,7 +126,7 @@ const Navbar = () => {
                 <span>Sales</span>
               </a>
             </nav>
-          </div> */}
+          </div>
         </div>
       </header>
     </>

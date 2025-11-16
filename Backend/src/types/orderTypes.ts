@@ -22,6 +22,7 @@ export enum PaymentMethod {
 export enum PaymentStatus {
   paid = "paid",
   Unpaid = "unpaid",
+  Pending = "pending",
 }
 
 export interface KhaltiResponse {
