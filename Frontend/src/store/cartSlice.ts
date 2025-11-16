@@ -59,6 +59,7 @@ export function addToCart(productId: string) {
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setItems(response.data.data));
+        console.log(response.data.data);
       } else {
         dispatch(setStatus(Status.ERROR));
       }
@@ -77,6 +78,7 @@ export function fetchCartItems() {
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setItems(response.data.data));
+        console.log(response.data.data);
       } else {
         dispatch(setStatus(Status.ERROR));
       }

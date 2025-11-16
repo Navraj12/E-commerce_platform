@@ -42,7 +42,6 @@ class ProductController {
       productPrice,
       productTotalStockQty,
       productImageUrl: fileName,
-
       userId: userId,
       categoryId: categoryId,
     });

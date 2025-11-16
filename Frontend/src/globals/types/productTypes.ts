@@ -10,6 +10,7 @@ interface Category {
   categoryName: string;
 }
 export interface Product {
+  name: string | undefined;
   id: string;
   productName: string;
   productDescription: string;

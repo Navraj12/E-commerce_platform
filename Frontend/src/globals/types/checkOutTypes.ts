@@ -45,7 +45,7 @@ export interface OrderData {
   phoneNumber: string;
   shippingAddress: string;
   totalAmount: number;
-  paymentDetails: {
+  PaymentDetails: {
     paymentMethod: PaymentMethod;
   };
   items: ItemDetails[];

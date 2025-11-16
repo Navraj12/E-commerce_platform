@@ -30,10 +30,19 @@ const SingleProduct = () => {
           <div className="flex flex-col md:flex-row -mx-4">
             <div className="md:flex-1 px-4">
               <div className="h-[460px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4">
-                <img
+                {/* <img
                   className="w-full h-full object-cover"
                   src={singleProduct?.productImageUrl}
                   alt="Product Image"
+                /> */}
+                <img
+                  src={
+                    singleProduct?.productImageUrl
+                      ? `http://localhost:5000/uploads/${singleProduct?.productImageUrl}`
+                      : "/placeholder.png"
+                  }
+                  className="h-[100px]"
+                  alt={singleProduct?.productName || "Product Image"}
                 />
               </div>
               <div className="flex -mx-2 mb-4">

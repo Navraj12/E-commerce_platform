@@ -11,11 +11,21 @@ const Card: React.FC<CardProps> = ({ data }) => {
     <Link to={`/product/${data.id}`}>
       <div className="max-w-2xl mx-auto mt-4">
         <div className="bg-white shadow-md rounded-lg max-w-sm dark:bg-gray-800 dark:border-gray-700">
-          <img
+          {/* <img
             className="rounded-t-lg p-8"
             src={data.productImageUrl}
             alt="product image"
+          /> */}
+          <img
+            className="h-[100px]"
+            alt={data?.productName || "Product Image"}
+            src={
+              data?.productImageUrl
+                ? `http://localhost:5000/uploads/${data.productImageUrl}`
+                : "/placeholder.png"
+            }
           />
+
           <div className="px-5 pb-5">
             <h3 className="text-gray-900 font-semibold text-xl tracking-tight dark:text-white">
               {data?.productName}

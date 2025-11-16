@@ -22,7 +22,7 @@ const Checkout = () => {
     phoneNumber: "",
     shippingAddress: "",
     totalAmount: 0,
-    paymentDetails: {
+    PaymentDetails: {
       paymentMethod: PaymentMethod.COD,
     },
     items: [],
@@ -31,7 +31,7 @@ const Checkout = () => {
     setPaymentMethod(e.target.value as PaymentMethod);
     setData({
       ...data,
-      paymentDetails: {
+      PaymentDetails: {
         paymentMethod: e.target.value as PaymentMethod,
       },
     });
@@ -61,6 +61,7 @@ const Checkout = () => {
       items: itemDetails,
       totalAmount: subtotal,
     };
+    console.log(orderData);
     await dispatch(orderItem(orderData));
     // if(status === Status.SUCCESS){
     //   alert("Order Placed successfully")
@@ -97,10 +98,19 @@ const Checkout = () => {
                     key={item?.Product?.id}
                     className="flex flex-col rounded-lg bg-white sm:flex-row"
                   >
-                    <img
+                    {/* <img
                       className="m-2 h-24 w-28 rounded-md border object-cover object-center"
                       src="https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
                       alt=""
+                    /> */}
+                    <img
+                      className="h-[100px]"
+                      alt={item?.Product?.productName || "Product Image"}
+                      src={
+                        item?.Product?.productImageUrl
+                          ? `http://localhost:5000/uploads/${item?.Product?.productImageUrl}`
+                          : "/placeholder.png"
+                      }
                     />
                     <div className="flex w-full flex-col px-4 py-4">
                       <span className="font-semibold">
@@ -136,7 +146,7 @@ const Checkout = () => {
               >
                 <img
                   className="w-14 object-contain"
-                  src="/images/naorrAeygcJzX0SyNI4Y0.png"
+                  src="/images/nao.png"
                   alt=""
                 />
                 <div className="ml-5">
@@ -161,10 +171,11 @@ const Checkout = () => {
                 htmlFor="radio_2"
               >
                 <img
-                  className="w-14 object-contain"
-                  src="/images/oG8xsl3xsOkwkMsrLGKM4.png"
-                  alt=""
+                  src="/images/khalti-logo.png"
+                  className="h-[40px] object-contain"
+                  alt="Khalti"
                 />
+
                 <div className="ml-5">
                   <span className="mt-2 font-semibold">Online(Khalti)</span>
                 </div>

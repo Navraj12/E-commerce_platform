@@ -58,6 +58,7 @@ class OrderController {
       totalAmount,
       userId,
       paymentId: paymentData.id,
+      // paymentStatus: "pending",
     });
     // console.log("something", orderData);
 
@@ -193,7 +194,6 @@ class OrderController {
       include: [
         {
           model: Product,
-
           include: [
             {
               model: Category,

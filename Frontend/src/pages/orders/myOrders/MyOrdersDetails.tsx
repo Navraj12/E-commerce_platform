@@ -54,10 +54,19 @@ const MyOrdersDetails = () => {
                       key={order.Order.id}
                     >
                       <div className="pb-4 md:pb-8 w-full md:w-40">
-                        <img
+                        {/* <img
                           className="w-full hidden md:block"
                           src={order.Product.productImageUrl}
                           alt="dress"
+                        /> */}
+                        <img
+                          src={
+                        order?.Product?.productImageUrl
+                          ? `http://localhost:5000/uploads/${order?.Product?.productImageUrl}`
+                          : "/placeholder.png"
+                      }
+                          className="h-[100px]"
+                          alt={order?.Product?.productName || "Product Image"}
                         />
                       </div>
                       <p className="text-base dark:text-white xl:text-lg leading-6">

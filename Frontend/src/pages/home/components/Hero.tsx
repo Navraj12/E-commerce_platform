@@ -1,6 +1,11 @@
 import Navbar from "../../../globals/components/navbar/Navbar.tsx";
-
-const Hero = () => {
+interface HeroProps {
+  product?: {
+    productName: string;
+    productImageUrl?: string;
+  };
+}
+const Hero: React.FC<HeroProps> = ({ product }) => {
   return (
     <div className="relative overflow-hidden bg-white dark:bg-gray-900 dark:text-gray-100">
       <Navbar />
@@ -47,9 +52,13 @@ const Hero = () => {
             <div className="absolute inset-0 -m-6 -rotate-2 rounded-xl bg-gray-200 dark:bg-gray-800" />
             <div className="absolute inset-0 -m-6 rotate-1 rounded-xl bg-blue-800/75 shadow-inner dark:bg-blue-900/75" />
             <img
-              src=""
-              className="relative mx-auto rounded-lg shadow-lg"
-              alt=""
+              src={
+                product?.productImageUrl
+                  ? `http://localhost:5000/uploads/${product?.productImageUrl}`
+                  : "/placeholder.png"
+              }
+              className="h-[100px]"
+              alt={product?.productName || "Product Image"}
             />
           </div>
         </div>

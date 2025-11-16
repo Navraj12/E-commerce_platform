@@ -13,14 +13,16 @@ const Cart = () => {
     dispatch(updateCartItem(productId, quantity));
   };
 
-  const totalItemInCarts = items.reduce(
-    (total, item) => item?.quantity + total,
-    0
-  );
-  const totalPriceInCarts = items.reduce(
-    (total, item) => item?.Product?.productPrice * item?.quantity + total,
-    0
-  );
+  const totalItemInCarts = Array.isArray(items)
+    ? items.reduce((total, item) => total + (item.quantity || 0), 0)
+    : 0;
+  const totalPriceInCarts = Array.isArray(items)
+    ? items.reduce(
+        (total, item) =>
+          total + (item?.Product?.productPrice || 0) * (item.quantity || 0),
+        0
+      )
+    : 0;
   return (
     <>
       <Navbar />
@@ -31,11 +33,20 @@ const Cart = () => {
             {items.length > 0 &&
               items.map((item) => {
                 return (
-                  <div className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start">
+                  <div
+                    className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
+                    key={item?.Product?.id}
+                  >
                     <img
-                      src={item?.Product?.productImageUrl}
                       className="h-[100px]"
+                      alt={item?.Product?.productName || "Product Image"}
+                      src={
+                        item?.Product?.productImageUrl
+                          ? `http://localhost:5000/uploads/${item?.Product?.productImageUrl}`
+                          : "/placeholder.png"
+                      }
                     />
+
                     <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
                       <div className="mt-5 sm:mt-0">
                         <h2 className="text-lg font-bold text-gray-900">
@@ -63,7 +74,13 @@ const Cart = () => {
                             className="h-8 w-8 border bg-white text-center text-xs outline-none"
                             type="number"
                             value={item.quantity}
-                            min="1"
+                            min={1}
+                            onChange={(e) =>
+                              handleUpdate(
+                                item?.Product?.id,
+                                Number(e.target.value)
+                              )
+                            }
                           />
                           <span
                             className="cursor-pointer rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50"
@@ -87,13 +104,13 @@ const Cart = () => {
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
                               viewBox="0 0 24 24"
-                              stroke-width="1.5"
+                              strokeWidth="1.5"
                               stroke="currentColor"
                               className="h-5 w-5 cursor-pointer duration-150 hover:text-red-500"
                             >
                               <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 d="M6 18L18 6M6 6l12 12"
                               />
                             </svg>

@@ -1,59 +1,3 @@
-// src/http/index.ts
-// import axios from "axios";
-
-// const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/";
-
-// export const API = axios.create({
-//   baseURL: BASE_URL,
-// });
-
-// export const APIAuthenticated = axios.create({
-//   baseURL: BASE_URL,
-// });
-
-// APIAuthenticated.interceptors.request.use(
-//   (config) => {
-//     const token = localStorage.getItem("token");
-//     if (token && config.headers) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
-
-// export { BASE_URL };
-
-// import axios from "axios";
-
-// const API = axios.create({
-//   baseURL: "http://localhost:5000/",
-//   headers: {
-//     "Content-Type": "application/json",
-//     Accept: "application/json",
-//   },
-// });
-
-// const APIAuthenticated = axios.create({
-//   baseURL: "http://localhost:5000/",
-//   headers: {
-//     "Content-Type": "application/json",
-//     Accept: "application/json",
-//     // Authorization: localStorage.getItem("token"),
-//   },
-// });
-
-// // Intercept requests to add token dynamically
-// APIAuthenticated.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("token");
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// });
-
-// export { API, APIAuthenticated };
-
 import axios from "axios";
 
 const API = axios.create({
@@ -66,11 +10,38 @@ const API = axios.create({
 
 const APIAuthenticated = axios.create({
   baseURL: "http://localhost:5000",
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-  },
+});
+
+APIAuthenticated.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
 });
 
 export { API, APIAuthenticated };
+
+
+// import axios from "axios";
+
+// const API = axios.create({
+//   baseURL: "http://localhost:5000",
+//   headers: {
+//     "Content-Type": "application/json",
+//     Accept: "application/json",
+//   },
+// });
+
+// const APIAuthenticated = axios.create({
+//   baseURL: "http://localhost:5000",
+//   headers: {
+//     "Content-Type": "application/json",
+//     Accept: "application/json",
+//     Authorization: `Bearer ${localStorage.getItem("token")}`,
+//   },
+// });
+
+// export { API, APIAuthenticated };

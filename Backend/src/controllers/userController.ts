@@ -23,7 +23,7 @@ class AuthController {
     await User.create({
       username,
       email,
-      password: await bcrypt.hash(password, 10),
+      password: await bcrypt.hash(password, 4),
     });
     res.status(200).json({
       message: "User registered successfully",

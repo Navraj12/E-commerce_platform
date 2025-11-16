@@ -33,7 +33,7 @@ export function fetchProducts() {
   return async function fetchProductsThunk(dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await API.get("admin/product");
+      const response = await API.get("/admin/product");
       console.log(response);
       if (response.status === 200) {
         const { data } = response.data;
@@ -64,7 +64,7 @@ export function fetchByProductId(productId: string) {
     } else {
       dispatch(setStatus(Status.LOADING));
       try {
-        const response = await API.get(`admin/product/${productId}`);
+        const response = await API.get(`/admin/product/${productId}`);
         if (response.status === 200) {
           const { data } = response.data;
           dispatch(setStatus(Status.SUCCESS));

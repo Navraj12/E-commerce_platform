@@ -28,7 +28,7 @@ class Order extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  declare shippingAddress: string;
+  declare shippingAddress: number;
   @Column({
     type: DataType.FLOAT,
     allowNull: false,
@@ -37,6 +37,7 @@ class Order extends Model {
 
   @Column({
     type: DataType.ENUM("pending", "shipped", "delivered", "cancelled"),
+    defaultValue: "pending",
   })
   declare orderStatus: string;
 }

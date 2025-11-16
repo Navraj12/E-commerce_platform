@@ -9,6 +9,7 @@ dotenv.config();
 
 import cors from "cors";
 import jwt from "jsonwebtoken";
+import path from "path";
 import { Server } from "socket.io";
 import { promisify } from "util";
 import adminSeeder from "./adminseeder";
@@ -28,6 +29,7 @@ app.use(
 app.use(express.json());
 
 adminSeeder();
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/", userRoute);
 app.use("/admin/product", productRoute);
