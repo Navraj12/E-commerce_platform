@@ -63,16 +63,20 @@ class CartController {
         },
       ],
     });
-    if (cartItems.length === 0) {
-      res.status(404).json({
-        message: "No items found in the cart",
-      });
-    } else {
-      res.status(200).json({
-        message: "Cart items fetched successfully",
-        data: cartItems,
-      });
-    }
+    // if (cartItems.length === 0){
+    //   res.status(404).json({
+    //     message: "No items found in the cart",
+    //   });
+    // } else {
+    //   res.status(200).json({
+    //     message: "Cart items fetched successfully",
+    //     data: cartItems,
+    //   });
+    // }
+    res.status(200).json({
+      message: "Cart items fetched successfully",
+      data: cartItems, 
+    });
   }
 
   async deleteMyCartItem(req: AuthRequest, res: Response): Promise<void> {

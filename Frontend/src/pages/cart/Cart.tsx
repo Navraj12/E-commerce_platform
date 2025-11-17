@@ -35,7 +35,7 @@ const Cart = () => {
                 return (
                   <div
                     className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
-                    key={item?.Product?.id}
+                    key={item.id || item.Product?.id || item.productId}
                   >
                     <img
                       className="h-[100px]"

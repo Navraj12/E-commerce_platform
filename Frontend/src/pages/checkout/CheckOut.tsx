@@ -9,6 +9,7 @@ import {
 import { Status } from "../../globals/types/types.ts";
 import { orderItem } from "../../store/checkoutSlice.ts";
 import { useAppDispatch, useAppSelector } from "../../store/hooks.ts";
+import { toast } from "react-toastify";
 
 const Checkout = () => {
   const { items } = useAppSelector((state) => state.carts);
@@ -74,6 +75,8 @@ const Checkout = () => {
     }
     if (status === Status.SUCCESS) {
       alert("Order Placed successfully");
+dispatch(clearCart()); // ✅ clear old cart
+  toast.success("Order placed successfully");
       navigate("/");
     }
   }, [status, khaltiUrl, navigate]);
@@ -274,3 +277,8 @@ const Checkout = () => {
 };
 
 export default Checkout;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function clearCart(): any {
+  throw new Error("Function not implemented.");
+}
+

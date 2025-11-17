@@ -21,8 +21,26 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    setItems(state: CartState, action: PayloadAction<CartItem[]>) {
-      state.items = action.payload;
+    setItems(
+      state: CartState,
+      action: PayloadAction<CartItem | CartItem[]>
+    ) {
+      const payload = action.payload;
+
+      if (Array.isArray(payload)) {
+        state.items = payload;
+        return;
+      }
+
+      const existing = state.items.find(
+        (item) => item.productId === payload.productId
+      );
+
+      if (existing) {
+        existing.quantity = payload.quantity;
+      } else {
+        state.items.push(payload);
+      }
     },
     setStatus(state: CartState, action: PayloadAction<Status>) {
       state.status = action.payload;
