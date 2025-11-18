@@ -22,7 +22,7 @@ const Footer = () => {
             <svg
               fill="currentColor"
               viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
+              xmlns=""
               className="hi-solid hi-heart mx-1 inline-block size-4 text-red-600"
             >
               <path
@@ -34,12 +34,12 @@ const Footer = () => {
             <span>
               by
               <a
-                href="https://pixelcave.com"
+                href="https://github.com/Navraj12"
                 className="font-medium text-blue-600 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                pixelate
+                NTR
               </a>
             </span>
           </div>
