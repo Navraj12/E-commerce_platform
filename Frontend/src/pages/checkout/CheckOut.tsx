@@ -1,5 +1,6 @@
 import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Navbar from "../../globals/components/navbar/Navbar.tsx";
 import {
   type ItemDetails,
@@ -7,9 +8,9 @@ import {
   PaymentMethod,
 } from "../../globals/types/checkOutTypes.ts";
 import { Status } from "../../globals/types/types.ts";
+import { clearCartItems } from "../../store/cartSlice.ts";
 import { orderItem } from "../../store/checkoutSlice.ts";
 import { useAppDispatch, useAppSelector } from "../../store/hooks.ts";
-import { toast } from "react-toastify";
 
 const Checkout = () => {
   const { items } = useAppSelector((state) => state.carts);
@@ -28,6 +29,7 @@ const Checkout = () => {
     },
     items: [],
   });
+
   const handlePaymentMethod = (e: ChangeEvent<HTMLInputElement>) => {
     setPaymentMethod(e.target.value as PaymentMethod);
     setData({
@@ -60,7 +62,7 @@ const Checkout = () => {
     const orderData = {
       ...data,
       items: itemDetails,
-      totalAmount: subtotal,
+      totalAmount: subtotal + 100,
     };
     console.log(orderData);
     await dispatch(orderItem(orderData));
@@ -75,11 +77,11 @@ const Checkout = () => {
     }
     if (status === Status.SUCCESS) {
       alert("Order Placed successfully");
-dispatch(clearCart()); // ✅ clear old cart
-  toast.success("Order placed successfully");
+      dispatch(clearCartItems());
+      toast.success("Order placed successfully");
       navigate("/");
     }
-  }, [status, khaltiUrl, navigate]);
+  }, [status, khaltiUrl, navigate, dispatch]);
 
   return (
     <>
@@ -256,6 +258,7 @@ dispatch(clearCart()); // ✅ clear old cart
 
             {paymentMethod === PaymentMethod.Khalti ? (
               <button
+                type="submit"
                 className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white"
                 style={{ backgroundColor: "purple" }}
               >
@@ -277,8 +280,3 @@ dispatch(clearCart()); // ✅ clear old cart
 };
 
 export default Checkout;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function clearCart(): any {
-  throw new Error("Function not implemented.");
-}
-

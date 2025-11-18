@@ -21,10 +21,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    setItems(
-      state: CartState,
-      action: PayloadAction<CartItem | CartItem[]>
-    ) {
+    setItems(state: CartState, action: PayloadAction<CartItem | CartItem[]>) {
       const payload = action.payload;
 
       if (Array.isArray(payload)) {
@@ -33,7 +30,7 @@ const cartSlice = createSlice({
       }
 
       const existing = state.items.find(
-        (item) => item.productId === payload.productId
+        (item) => item.Product.id === payload.productId
       );
 
       if (existing) {
@@ -49,8 +46,14 @@ const cartSlice = createSlice({
       const index = state.items.findIndex(
         (item) => item.Product.id === action.payload.productId
       );
+if(index ! == -1) {
       state.items.splice(index, 1);
+}
     },
+    clearCartItems: (state) => {
+      state.items = [];
+    },
+
     setUpdateItem(state: CartState, action: PayloadAction<UpdateAction>) {
       const index = state.items.findIndex(
         (item) => item.Product.id === action.payload.productId
@@ -62,8 +65,13 @@ const cartSlice = createSlice({
   },
 });
 
-export const { setItems, setStatus, setDeleteItem, setUpdateItem } =
-  cartSlice.actions;
+export const {
+  setItems,
+  setStatus,
+  setDeleteItem,
+  setUpdateItem,
+  clearCartItems,
+} = cartSlice.actions;
 export default cartSlice.reducer;
 
 export function addToCart(productId: string) {
