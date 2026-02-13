@@ -8,7 +8,7 @@ import { OrderStatus } from "../../../globals/types/checkOutTypes.ts";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
 // import the correct socket instance, adjust the path as needed
 
-import { Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 import {
   fetchMyOrders,
   updateOrderStatusInStore,
@@ -22,6 +22,7 @@ const MyOrders = () => {
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [date, setDate] = useState<string>("");
+  const socket = io();
   useEffect(() => {
     dispatch(fetchMyOrders());
   }, [dispatch]);
@@ -44,11 +45,11 @@ const MyOrders = () => {
     );
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Socket.on("statusUpdated", (data: any) => {
+    socket.on("statusUpdated", (data: any) => {
       // Assuming updateOrderStatusInStore is an action creator that takes the payload as the first argument
       return dispatch(updateOrderStatusInStore(data));
     });
-  }, [dispatch]);
+  }, [dispatch, socket]);
   return (
     <>
       <Navbar />
