@@ -32,7 +32,6 @@ class OrderController {
       PaymentDetails,
       items,
     }: OrderData = req.body;
-    // console.log( PaymentDetails.paymentMethod);
     if (
       !phoneNumber ||
       !shippingAddress ||
@@ -52,16 +51,13 @@ class OrderController {
       paymentMethod: PaymentDetails.paymentMethod,
       paymentStatus: PaymentStatus.Pending,
     });
-    // console.log(paymentData);
     const orderData = await Order.create({
       phoneNumber,
       shippingAddress,
       totalAmount,
       userId,
       paymentId: paymentData.id,
-      // paymentStatus: "pending",
     });
-    // console.log("something", orderData);
 
     let responseOrderData;
 
@@ -79,7 +75,7 @@ class OrderController {
       });
     }
     if (PaymentDetails.paymentMethod == PaymentMethod.Khalti) {
-      //Khalti integration
+      //This is given to khalti so that khalti will know where and what to do?
       const data = {
         return_url: "http://localhost:5173/",
         purchase_order_id: orderData.id,
@@ -104,7 +100,6 @@ class OrderController {
         url: KhaltiResponse.payment_url,
         data: responseOrderData,
       });
-      // console.log(url);
     } else {
       res.status(200).json({
         message: "order placed successfully",
@@ -114,7 +109,6 @@ class OrderController {
 
   async verifyTransaction(req: AuthRequest, res: Response): Promise<void> {
     const { pidx } = req.body;
-    // const userId = req.user?.id;
     if (!pidx) {
       res.status(400).json({
         message: "please provide pidx",
@@ -131,7 +125,6 @@ class OrderController {
       }
     );
     const data: TransactionVerificationResponse = response.data;
-    // console.log(data);
     if (data.status === TransactionStatus.Completed) {
       await Payment.update(
         { paymentStatus: "paid" },
