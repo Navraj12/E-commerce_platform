@@ -22,7 +22,6 @@ const MyOrders = () => {
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [date, setDate] = useState<string>("");
-  const socket = io();
   useEffect(() => {
     dispatch(fetchMyOrders());
   }, [dispatch]);
@@ -44,6 +43,7 @@ const MyOrders = () => {
           new Date(date).toLocaleDateString()
     );
   useEffect(() => {
+      const socket = io();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket.on("statusUpdated", (data: any) => {
       // Assuming updateOrderStatusInStore is an action creator that takes the payload as the first argument

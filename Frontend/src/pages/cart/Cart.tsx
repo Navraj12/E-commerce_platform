@@ -9,6 +9,7 @@ const Cart = () => {
   const handleDelete = (productId: string) => {
     dispatch(deleteCartItem(productId));
   };
+
   const handleUpdate = (productId: string, quantity: number) => {
     dispatch(updateCartItem(productId, quantity));
   };
