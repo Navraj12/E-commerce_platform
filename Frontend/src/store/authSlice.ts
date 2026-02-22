@@ -1,6 +1,8 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { Status } from "../globals/types/types.ts";
 import { API } from "../http/index.ts";
+import type { ThunkDispatch } from "@reduxjs/toolkit";
+import type { RootState } from "./store";
 
 interface RegisterData {
   username: string;
@@ -70,8 +72,6 @@ export function register(data: RegisterData) {
   };
 }
 
-import type { ThunkDispatch } from "@reduxjs/toolkit";
-import type { RootState } from "./store";
 
 export function login(data: LoginData) {
   return async function loginThunk(
