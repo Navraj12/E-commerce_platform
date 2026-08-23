@@ -72,6 +72,7 @@ export interface MyOrderData {
   shippingAddress: string;
   totalAmount: number;
   Payment: OrderPaymentData;
+  User?: UserData & { id?: string };
   orderStatus: OrderStatus;
   createdAt: string;
   updatedAt: string;
@@ -81,6 +82,6 @@ export interface OrderDetails {
   id: string;
   quantity: number;
   orderId: string;
-  Product: Product;
+  Product: Product | null;
   Order: MyOrderData;
 }

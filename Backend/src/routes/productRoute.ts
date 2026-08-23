@@ -21,6 +21,12 @@ router
 router
   .route("/:id")
   .get(productController.getSingleProduct)
+  .patch(
+    authMiddleware.isAuthenticated as RequestHandler,
+    authMiddleware.restrictTo(Role.Admin) as RequestHandler,
+    upload.single("productImageUrl"),
+    productController.updateProduct
+  )
   .delete(
     authMiddleware.isAuthenticated as RequestHandler,
     authMiddleware.restrictTo(Role.Admin) as RequestHandler,

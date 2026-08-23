@@ -46,7 +46,7 @@ const cartSlice = createSlice({
       const index = state.items.findIndex(
         (item) => item.Product.id === action.payload.productId
       );
-      if (index! == -1) {
+      if (index !== -1) {
         state.items.splice(index, 1);
       }
     },
@@ -84,8 +84,7 @@ export function addToCart(productId: string) {
       });
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
-        dispatch(setItems(response.data.data));
-        console.log(response.data.data);
+        await fetchCartItems()(dispatch);
       } else {
         dispatch(setStatus(Status.ERROR));
       }
@@ -104,7 +103,6 @@ export function fetchCartItems() {
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setItems(response.data.data));
-        console.log(response.data.data);
       } else {
         dispatch(setStatus(Status.ERROR));
       }

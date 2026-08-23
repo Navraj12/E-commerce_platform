@@ -88,7 +88,7 @@ class OrderController {
         data,
         {
           headers: {
-            Authorization: "key 64c175cb75ae4b8da15979bde25a520b",
+            Authorization: `key ${process.env.KHALTI_SECRET_KEY}`,
           },
         }
       );
@@ -120,7 +120,7 @@ class OrderController {
       { pidx },
       {
         headers: {
-          Authorization: "key 64c175cb75ae4b8da15979bde25a520b",
+          Authorization: `key ${process.env.KHALTI_SECRET_KEY}`,
         },
       }
     );
@@ -137,16 +137,6 @@ class OrderController {
       res.status(200).json({
         message: "Payment verified successfully",
       });
-      // let order = await Order.findAll({
-      //   where: {
-      //     userId,
-      //   },
-      //   include: [
-      //     {
-      //       model: Payment,
-      //     },
-      //   ],
-      // });
     } else {
       res.status(200).json({
         message: "Payment not verified",
@@ -226,15 +216,15 @@ class OrderController {
   async cancelMyOrder(req: AuthRequest, res: Response): Promise<void> {
     const userId = req.user?.id;
     const orderId = req.params.id;
-    const order: any = await Order.findAll({
+    const order: any = await Order.findOne({
       where: {
         userId,
         id: orderId,
       },
     });
     if (
-      order?.OrderStatus === OrderStatus.Ontheway ||
-      order.OrderStatus == OrderStatus.Preparation
+      order?.orderStatus === OrderStatus.Ontheway ||
+      order?.orderStatus == OrderStatus.Preparation
     ) {
       res.status(200).json({
         message: "You cannot cancel order when it is in ontheway or prepared",
@@ -331,7 +321,12 @@ class OrderController {
         {
           model: Payment,
         },
+        {
+          model: User,
+          attributes: ["id", "username", "email"],
+        },
       ],
+      order: [["createdAt", "DESC"]],
     });
     if (orders.length > 0) {
       res.status(200).json({

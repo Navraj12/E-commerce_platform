@@ -1,7 +1,8 @@
-import { RequestHandler } from "express";
+import express, { RequestHandler, Router } from "express";
 import categoryController from "../controllers/categoryController";
 import authMiddleware, { Role } from "../middleware/authMiddleware";
-import router from "./userRoute";
+
+const router: Router = express.Router();
 
 router
   .route("/")

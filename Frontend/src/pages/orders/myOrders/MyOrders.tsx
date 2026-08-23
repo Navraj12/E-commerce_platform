@@ -2,17 +2,27 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../../globals/components/navbar/Navbar.tsx";
 import { OrderStatus } from "../../../globals/types/checkOutTypes.ts";
-// import  fetchMyOrders, {
-//   default as updateOrderStatusInStore,
-// } from "../../../store/checkoutSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
-// import the correct socket instance, adjust the path as needed
-
-import { io } from "socket.io-client";
+import { socket } from "../../../App.tsx";
 import {
   fetchMyOrders,
   updateOrderStatusInStore,
 } from "../../../store/checkoutSlice.ts";
+
+const statusBadgeClasses = (status: OrderStatus | string) => {
+  switch (status) {
+    case OrderStatus.Delivered:
+      return "bg-green-100 text-green-800";
+    case OrderStatus.Cancelled:
+      return "bg-red-100 text-red-800";
+    case OrderStatus.Ontheway:
+      return "bg-blue-100 text-blue-800";
+    case OrderStatus.Preparation:
+      return "bg-yellow-100 text-yellow-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
 
 const MyOrders = () => {
   const dispatch = useAppDispatch();
@@ -43,13 +53,15 @@ const MyOrders = () => {
           new Date(date).toLocaleDateString()
     );
   useEffect(() => {
-      const socket = io();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    socket.on("statusUpdated", (data: any) => {
-      // Assuming updateOrderStatusInStore is an action creator that takes the payload as the first argument
-      return dispatch(updateOrderStatusInStore(data));
-    });
-  }, [dispatch, socket]);
+    const handleStatusUpdated = (data: any) => {
+      dispatch(updateOrderStatusInStore(data));
+    };
+    socket.on("statusUpdated", handleStatusUpdated);
+    return () => {
+      socket.off("statusUpdated", handleStatusUpdated);
+    };
+  }, [dispatch]);
   return (
     <>
       <Navbar />
@@ -74,7 +86,7 @@ const MyOrders = () => {
                     <option value={OrderStatus.Pending}>pending</option>
                     <option value={OrderStatus.Delivered}>delivered</option>
                     <option value={OrderStatus.Ontheway}>ontheway</option>
-                    <option value={OrderStatus.Cancel}>cancelled</option>
+                    <option value={OrderStatus.Cancelled}>cancelled</option>
                     <option value={OrderStatus.Preparation}>preparation</option>
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -138,24 +150,20 @@ const MyOrders = () => {
                     </tr>
                   </thead>
                   <tbody>
+                    {filteredOrders.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan={5}
+                          className="px-5 py-10 text-center text-sm text-gray-500 bg-white"
+                        >
+                          No orders found.
+                        </td>
+                      </tr>
+                    )}
                     {filteredOrders.length > 0 &&
                       filteredOrders.map((order) => {
                         return (
-                          <tr>
-                            {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <div className="flex items-center">
-                                                <div className="flex-shrink-0 w-10 h-10">
-                                                    <img className="w-full h-full rounded-full"
-                                                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-                                                        alt="" />
-                                                </div>
-                                                <div className="ml-3">
-                                                    <p className="text-gray-900 whitespace-no-wrap">
-                                                        {order.orderName}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </td> */}
+                          <tr key={order.id}>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <Link to={`/myorders/${order.id}`}>
                                 <p
@@ -178,11 +186,11 @@ const MyOrders = () => {
                             </td>
 
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                              <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                                <span
-                                  aria-hidden
-                                  className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                                ></span>
+                              <span
+                                className={`inline-block rounded-full px-3 py-1 text-xs font-semibold leading-tight ${statusBadgeClasses(
+                                  order.orderStatus
+                                )}`}
+                              >
                                 <span className="relative">
                                   {order.orderStatus}
                                 </span>
@@ -198,19 +206,6 @@ const MyOrders = () => {
                       })}
                   </tbody>
                 </table>
-                <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
-                  <span className="text-xs xs:text-sm text-gray-900">
-                    Showing 1 to 4 of 50 Entries
-                  </span>
-                  <div className="inline-flex mt-2 xs:mt-0">
-                    <button className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                      Prev
-                    </button>
-                    <button className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
-                      Next
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

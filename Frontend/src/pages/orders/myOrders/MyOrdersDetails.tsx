@@ -2,16 +2,74 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../../../globals/components/navbar/Navbar.tsx";
 import { OrderStatus } from "../../../globals/types/checkOutTypes.ts";
+import { getProductImageUrl } from "../../../globals/utils/image.ts";
 import {
   cancelMyOrder,
   fetchMyOrderDetails,
 } from "../../../store/checkoutSlice.ts";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
 
+const STATUS_STEPS = [
+  { key: OrderStatus.Pending, label: "Pending" },
+  { key: OrderStatus.Preparation, label: "Preparing" },
+  { key: OrderStatus.Ontheway, label: "On the way" },
+  { key: OrderStatus.Delivered, label: "Delivered" },
+];
+
+const OrderStatusStepper = ({ status }: { status: OrderStatus }) => {
+  if (status === OrderStatus.Cancelled) {
+    return (
+      <span className="inline-flex items-center rounded-full bg-red-100 px-4 py-1.5 text-sm font-semibold text-red-700 dark:bg-red-900/40 dark:text-red-300">
+        Order Cancelled
+      </span>
+    );
+  }
+  const currentIndex = STATUS_STEPS.findIndex((step) => step.key === status);
+  return (
+    <div className="flex w-full items-center">
+      {STATUS_STEPS.map((step, index) => {
+        const isDone = index <= currentIndex;
+        return (
+          <div key={step.key} className="flex flex-1 items-center last:flex-none">
+            <div className="flex flex-col items-center">
+              <div
+                className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+                  isDone
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
+                }`}
+              >
+                {index + 1}
+              </div>
+              <span
+                className={`mt-1 text-[11px] font-medium ${
+                  isDone
+                    ? "text-blue-700 dark:text-blue-300"
+                    : "text-gray-400 dark:text-gray-500"
+                }`}
+              >
+                {step.label}
+              </span>
+            </div>
+            {index < STATUS_STEPS.length - 1 && (
+              <div
+                className={`mx-2 h-0.5 flex-1 ${
+                  index < currentIndex
+                    ? "bg-blue-600"
+                    : "bg-gray-200 dark:bg-gray-700"
+                }`}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const MyOrdersDetails = () => {
   const { id } = useParams();
   const { orderDetails } = useAppSelector((state) => state.orders);
-  console.log(orderDetails);
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (id) {
@@ -39,6 +97,12 @@ const MyOrdersDetails = () => {
             {new Date(orderDetails[0]?.Order.createdAt).toLocaleDateString()}
           </p>
         </div>
+
+        {orderDetails.length > 0 && (
+          <div className="mt-6 rounded-lg bg-gray-50 dark:bg-gray-800 p-6">
+            <OrderStatusStepper status={orderDetails[0]?.Order?.orderStatus} />
+          </div>
+        )}
         <div className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
           <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
             <div className="flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
@@ -54,23 +118,14 @@ const MyOrdersDetails = () => {
                       key={order.Order.id}
                     >
                       <div className="pb-4 md:pb-8 w-full md:w-40">
-                        {/* <img
-                          className="w-full hidden md:block"
-                          src={order.Product.productImageUrl}
-                          alt="dress"
-                        /> */}
                         <img
-                          src={
-                        order?.Product?.productImageUrl
-                          ? `http://localhost:5000/uploads/${order?.Product?.productImageUrl}`
-                          : "/placeholder.png"
-                      }
-                          className="h-[100px]"
+                          src={getProductImageUrl(order?.Product?.productImageUrl)}
+                          className="h-[100px] w-[100px] rounded-md object-cover"
                           alt={order?.Product?.productName || "Product Image"}
                         />
                       </div>
                       <p className="text-base dark:text-white xl:text-lg leading-6">
-                        {order.Product.productName}{" "}
+                        {order.Product?.productName ?? "Product no longer available"}{" "}
                       </p>
                       <div className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
                         <div className="w-full flex flex-col justify-start items-start space-y-8">
@@ -78,13 +133,15 @@ const MyOrdersDetails = () => {
                         </div>
                         <div className="flex justify-between space-x-8 items-start w-full">
                           <p className="text-base dark:text-white xl:text-lg leading-6">
-                            Rs. {order.Product.productPrice}{" "}
+                            {order.Product ? `Rs. ${order.Product.productPrice}` : "—"}{" "}
                           </p>
                           <p className="text-base dark:text-white xl:text-lg leading-6 text-gray-800">
                             Qty: {order.quantity}
                           </p>
                           <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">
-                            Rs. {order.Product.productPrice * order.quantity}{" "}
+                            {order.Product
+                              ? `Rs. ${order.Product.productPrice * order.quantity}`
+                              : "—"}{" "}
                           </p>
                         </div>
                       </div>
@@ -185,7 +242,7 @@ const MyOrdersDetails = () => {
                   <div className="flex w-full justify-center items-center md:justify-start md:items-start">
                     <>
                       {orderDetails[0]?.Order?.orderStatus !==
-                        OrderStatus.Cancel && (
+                        OrderStatus.Cancelled && (
                         <button
                           className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-3 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 w-96 2xl:w-full text-base font-medium leading-4 text-gray-800"
                           style={{ marginTop: "10px" }}

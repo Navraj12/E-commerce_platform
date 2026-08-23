@@ -1,2 +1,10 @@
 @import "tailwindcss";
 @import "react-toastify/dist/ReactToastify.css";
+
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

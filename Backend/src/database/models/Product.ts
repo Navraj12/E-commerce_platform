@@ -50,6 +50,20 @@ class Product extends Model {
   @ForeignKey(() => Category)
   @Column({ type: DataType.UUID })
   declare categoryId: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+    defaultValue: false,
+  })
+  declare isFeatured: boolean | null;
+
+  @Column({
+    type: DataType.FLOAT,
+    allowNull: true,
+    defaultValue: null,
+  })
+  declare originalPrice: number | null;
 }
 
 export default Product;

@@ -2,12 +2,18 @@ import { type ChangeEvent, type FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Props, UserDataType } from "./types.ts";
 
-const Form: React.FC<Props> = ({ type, onSubmit }) => {
+const inputClasses =
+  "block w-full rounded-lg border border-gray-300 px-4 py-2.5 leading-6 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500/30";
+const labelClasses = "text-sm font-medium text-gray-700";
+
+const Form: React.FC<Props> = ({ type, onSubmit, submitting = false }) => {
   const [userData, setUserData] = useState<UserDataType>({
     email: "",
     username: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserData({
@@ -19,154 +25,180 @@ const Form: React.FC<Props> = ({ type, onSubmit }) => {
     e.preventDefault();
     onSubmit(userData);
   };
+
   return (
-    <>
-      <div
-        id="page-container"
-        className="mx-auto flex min-h-dvh w-full min-w-[320px] flex-col bg-gray-100 dark:bg-gray-900 dark:text-gray-100"
-      >
-        <main id="page-content" className="flex max-w-full flex-auto flex-col">
-          <div className="relative mx-auto flex min-h-dvh w-full max-w-10xl items-center justify-center overflow-hidden p-4 lg:p-8">
-            <section className="w-full max-w-xl py-6">
-              <header className="mb-10 text-center">
-                <h1 className="mb-2 inline-flex items-center gap-2 text-2xl font-bold">
+    <div className="min-h-dvh w-full bg-white">
+      {/* Top utility bar */}
+      <div className="border-b border-gray-100">
+        <div className="container mx-auto flex items-center justify-between px-4 py-4 lg:px-8 xl:max-w-7xl">
+          <Link
+            to="/"
+            className="flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-600"
+          >
+            Online Karobar
+          </Link>
+          <div className="flex items-center gap-4 text-sm font-medium text-gray-600">
+            <a href="#" className="hover:text-blue-600">
+              Help
+            </a>
+            <Link
+              to={type === "register" ? "/login" : "/register"}
+              className="hover:text-blue-600"
+            >
+              {type === "register" ? "Sign In" : "Register"}
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto max-w-md px-4 py-10 lg:px-8">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">
+            {type === "register" ? "Register" : "Sign In"}
+          </h1>
+          <p className="mt-2 text-sm text-gray-500">
+            {type === "register"
+              ? "Let's get you set up with your account. We just need a few details."
+              : "Welcome back! Sign in to continue to your account."}
+          </p>
+          <p className="mt-2 text-sm text-gray-600">
+            {type === "register" ? (
+              <>
+                Already have an account?{" "}
+                <Link
+                  to="/login"
+                  className="font-semibold text-blue-600 hover:text-blue-700"
+                >
+                  Sign in
+                </Link>
+              </>
+            ) : (
+              <>
+                Don't have an account yet?{" "}
+                <Link
+                  to="/register"
+                  className="font-semibold text-blue-600 hover:text-blue-700"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
+          </p>
+        </header>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-1">
+            <label htmlFor="email" className={labelClasses}>
+              Email address
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="you@example.com"
+              className={inputClasses}
+              onChange={handleChange}
+            />
+          </div>
+
+          {type === "register" && (
+            <div className="space-y-1">
+              <label htmlFor="username" className={labelClasses}>
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+                className={inputClasses}
+                onChange={handleChange}
+              />
+            </div>
+          )}
+
+          <div className="space-y-1">
+            <label htmlFor="password" className={labelClasses}>
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                className={`${inputClasses} pr-11`}
+                onChange={handleChange}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600"
+              >
+                {showPassword ? (
                   <svg
-                    className="hi-mini hi-cube-transparent inline-block size-5 text-blue-600 dark:text-blue-500"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
-                    aria-hidden="true"
+                    className="h-5 w-5"
                   >
+                    <path d="M3.28 2.22a.75.75 0 00-1.06 1.06l14.5 14.5a.75.75 0 101.06-1.06l-1.745-1.745a10.29 10.29 0 003.135-3.744.75.75 0 000-.667C17.766 6.542 14.522 4 10.75 4a9.6 9.6 0 00-4.16.94L3.28 2.22zM7.53 6.47l1.634 1.633a3 3 0 013.733 3.733l1.634 1.634a4.5 4.5 0 00-6.999-6.998z" />
+                    <path d="M10 17c-3.771 0-7.017-2.544-8.207-6.032a.75.75 0 010-.667 12.66 12.66 0 013.51-4.618l1.09 1.09a11.16 11.16 0 00-2.99 3.945 8.9 8.9 0 004.36 4.36l-1.114 1.114a.75.75 0 001.06 1.06l12.5-12.5a.75.75 0 00-1.06-1.06L15 8.44A5.98 5.98 0 0010 6a5.97 5.97 0 00-1.68.24l1.194 1.194A4.5 4.5 0 0114.5 12l1.34 1.34A11 11 0 0017.9 10.5a.75.75 0 000-.667 10.9 10.9 0 00-1.657-2.487l1.107-1.107A12.4 12.4 0 0119.207 9.968a.75.75 0 010 .667C18.017 14.456 14.771 17 11 17c-.34 0-.673-.02-1-.06z" />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="h-5 w-5"
+                  >
+                    <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
                     <path
                       fillRule="evenodd"
-                      d="M9.638 1.093a.75.75 0 01.724 0l2 1.104a.75.75 0 11-.724 1.313L10 2.607l-1.638.903a.75.75 0 11-.724-1.313l2-1.104zM5.403 4.287a.75.75 0 01-.295 1.019l-.805.444.805.444a.75.75 0 01-.724 1.314L3.5 7.02v.73a.75.75 0 01-1.5 0v-2a.75.75 0 01.388-.657l1.996-1.1a.75.75 0 011.019.294zm9.194 0a.75.75 0 011.02-.295l1.995 1.101A.75.75 0 0118 5.75v2a.75.75 0 01-1.5 0v-.73l-.884.488a.75.75 0 11-.724-1.314l.806-.444-.806-.444a.75.75 0 01-.295-1.02zM7.343 8.284a.75.75 0 011.02-.294L10 8.893l1.638-.903a.75.75 0 11.724 1.313l-1.612.89v1.557a.75.75 0 01-1.5 0v-1.557l-1.612-.89a.75.75 0 01-.295-1.019zM2.75 11.5a.75.75 0 01.75.75v1.557l1.608.887a.75.75 0 01-.724 1.314l-1.996-1.101A.75.75 0 012 14.25v-2a.75.75 0 01.75-.75zm14.5 0a.75.75 0 01.75.75v2a.75.75 0 01-.388.657l-1.996 1.1a.75.75 0 11-.724-1.313l1.608-.887V12.25a.75.75 0 01.75-.75zm-7.25 4a.75.75 0 01.75.75v.73l.888-.49a.75.75 0 01.724 1.313l-2 1.104a.75.75 0 01-.724 0l-2-1.104a.75.75 0 11.724-1.313l.888.49v-.73a.75.75 0 01.75-.75z"
+                      d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span>Company</span>
-                </h1>
-                <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Welcome, please {type === "register" ? "sign up" : "sign in"}{" "}
-                  to your dashboard
-                </h2>
-              </header>
-
-              <div className="flex flex-col overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800 dark:text-gray-100">
-                <div className="grow p-5 md:px-16 md:py-12">
-                  <form className="space-y-6" onSubmit={handleSubmit}>
-                    <div className="space-y-1">
-                      <label htmlFor="email" className="text-sm font-medium">
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="Enter your email"
-                        className="block w-full rounded-lg border border-gray-200 px-5 py-3 leading-6 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-500/50 dark:border-gray-600 dark:bg-gray-800 dark:placeholder-gray-400 dark:focus:border-blue-500"
-                        onChange={handleChange}
-                      />
-                    </div>
-                    {type === "register" && (
-                      <div className="space-y-1">
-                        <label
-                          htmlFor="username"
-                          className="text-sm font-medium"
-                        >
-                          Username
-                        </label>
-                        <input
-                          type="username"
-                          id="username"
-                          name="username"
-                          placeholder="Enter your username"
-                          className="block w-full rounded-lg border border-gray-200 px-5 py-3 leading-6 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-500/50 dark:border-gray-600 dark:bg-gray-800 dark:placeholder-gray-400 dark:focus:border-blue-500"
-                          onChange={handleChange}
-                        />
-                      </div>
-                    )}
-                    <div className="space-y-1">
-                      <label htmlFor="password" className="text-sm font-medium">
-                        Password
-                      </label>
-                      <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Enter your password"
-                        className="block w-full rounded-lg border border-gray-200 px-5 py-3 leading-6 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-500/50 dark:border-gray-600 dark:bg-gray-800 dark:placeholder-gray-400 dark:focus:border-blue-500"
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div>
-                      <div className="mb-5 flex items-center justify-between gap-2">
-                        <label className="flex items-center">
-                          <input
-                            type="checkbox"
-                            id="remember_me"
-                            name="remember_me"
-                            className="size-4 rounded border border-gray-200 text-blue-500 focus:border-blue-500 focus:ring focus:ring-blue-500/50 dark:border-gray-600 dark:bg-gray-800 dark:ring-offset-gray-900 dark:checked:border-transparent dark:checked:bg-blue-500 dark:focus:border-blue-500"
-                          />
-                          <span className="ml-2 text-sm">Remember me</span>
-                        </label>
-                        <a
-                          href="#"
-                          className="inline-block text-sm font-medium text-blue-600 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300"
-                        >
-                          Forgot Password?
-                        </a>
-                      </div>
-                      <button
-                        type="submit"
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-blue-700 bg-blue-700 px-6 py-3 font-semibold leading-6 text-white hover:border-blue-600 hover:bg-blue-600 hover:text-white focus:ring focus:ring-blue-400/50 active:border-blue-700 active:bg-blue-700 dark:focus:ring-blue-400/90"
-                      >
-                        <svg
-                          className="hi-mini hi-arrow-uturn-right inline-block size-5 opacity-50"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          aria-hidden="true"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M12.207 2.232a.75.75 0 00.025 1.06l4.146 3.958H6.375a5.375 5.375 0 000 10.75H9.25a.75.75 0 000-1.5H6.375a3.875 3.875 0 010-7.75h10.003l-4.146 3.957a.75.75 0 001.036 1.085l5.5-5.25a.75.75 0 000-1.085l-5.5-5.25a.75.75 0 00-1.06.025z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <span>
-                          {type === "register" ? "Sign Up" : "Sign In"}
-                        </span>
-                      </button>
-                    </div>
-                  </form>
-                </div>
-                {type === "register" ? (
-                  <div className="grow bg-gray-50 p-5 text-center text-sm dark:bg-gray-700/50 md:px-16">
-                    Already have account ?
-                    <Link
-                      to="/login"
-                      className="font-medium text-blue-600 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300"
-                    >
-                      Sign In
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="grow bg-gray-50 p-5 text-center text-sm dark:bg-gray-700/50 md:px-16">
-                    Don’t have an account yet?
-                    <Link
-                      to="/register"
-                      className="font-medium text-blue-600 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300"
-                    >
-                      Sign up
-                    </Link>
-                  </div>
                 )}
-              </div>
-            </section>
+              </button>
+            </div>
           </div>
-        </main>
+
+          {type === "login" && (
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 text-sm text-gray-600">
+                <input
+                  type="checkbox"
+                  id="remember_me"
+                  name="remember_me"
+                  className="size-4 rounded border-gray-300 text-blue-600 focus:ring focus:ring-blue-500/30"
+                />
+                Remember me
+              </label>
+              <Link
+                to="/forgot-password"
+                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              >
+                Forgot password?
+              </Link>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full rounded-lg bg-blue-600 px-6 py-3 text-center font-semibold text-white transition hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-500/40 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {submitting
+              ? "Please wait..."
+              : type === "register"
+                ? "Create account"
+                : "Sign In"}
+          </button>
+        </form>
       </div>
-    </>
+    </div>
   );
 };
 

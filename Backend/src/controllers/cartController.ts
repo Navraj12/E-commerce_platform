@@ -4,17 +4,6 @@ import Category from "../database/models/Category";
 import Product from "../database/models/Product";
 import { AuthRequest } from "../middleware/authMiddleware";
 
-// const cartData ={
-
-//         id: string ,
-//         quantity: Number,
-//         createdAt:string,
-//         updatedAt: string,
-//         userId:string,
-//         productId: string
-
-// }
-
 class CartController {
   async addToCart(req: AuthRequest, res: Response) {
     const userId = req.user?.id;
@@ -23,6 +12,7 @@ class CartController {
       res.status(400).json({
         message: "Please provide productId and quantity",
       });
+      return;
     }
     let cartItem = await Cart.findOne({
       where: {
@@ -63,19 +53,9 @@ class CartController {
         },
       ],
     });
-    // if (cartItems.length === 0){
-    //   res.status(404).json({
-    //     message: "No items found in the cart",
-    //   });
-    // } else {
-    //   res.status(200).json({
-    //     message: "Cart items fetched successfully",
-    //     data: cartItems,
-    //   });
-    // }
     res.status(200).json({
       message: "Cart items fetched successfully",
-      data: cartItems, 
+      data: cartItems,
     });
   }
 
@@ -117,8 +97,14 @@ class CartController {
         productId,
       },
     });
-    if (cartData) cartData.quantity = quantity;
-    await cartData?.save();
+    if (!cartData) {
+      res.status(404).json({
+        message: "No such item in your cart",
+      });
+      return;
+    }
+    cartData.quantity = quantity;
+    await cartData.save();
     res.status(200).json({
       message: "Product of cart updated successfully",
       data: cartData,

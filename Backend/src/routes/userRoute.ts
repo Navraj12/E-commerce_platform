@@ -7,6 +7,19 @@ const router: Router = express.Router();
 router.route("/register").post(errorHandler(AuthController.registerUser));
 router.route("/login").post(errorHandler(AuthController.loginUser));
 router
+  .route("/request-reset")
+  .post(errorHandler(AuthController.requestPasswordReset));
+router
+  .route("/reset-password")
+  .post(errorHandler(AuthController.resetPassword));
+router
+  .route("/profile")
+  .get(
+    authMiddleware.isAuthenticated,
+    errorHandler(AuthController.getProfile)
+  );
+
+router
   .route("/users")
   .get(
     authMiddleware.isAuthenticated,
@@ -20,6 +33,14 @@ router
     authMiddleware.isAuthenticated,
     authMiddleware.restrictTo(Role.Admin) as RequestHandler,
     errorHandler(AuthController.deleteUser)
+  );
+
+router
+  .route("/users/:id/role")
+  .patch(
+    authMiddleware.isAuthenticated,
+    authMiddleware.restrictTo(Role.Admin) as RequestHandler,
+    errorHandler(AuthController.updateUserRole)
   );
 
 export default router;

@@ -10,7 +10,6 @@ interface Category {
   categoryName: string;
 }
 export interface Product {
-  name: string | undefined;
   id: string;
   productName: string;
   productDescription: string;
@@ -23,6 +22,11 @@ export interface Product {
   categoryId: string;
   User: User;
   Category: Category;
+  averageRating?: number;
+  reviewCount?: number;
+  isFeatured?: boolean | null;
+  originalPrice?: number | null;
+  discountPercent?: number | null;
 }
 
 export interface ProductState {

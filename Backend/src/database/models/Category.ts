@@ -16,6 +16,12 @@ class Category extends Model {
     type: DataType.STRING,
   })
   declare categoryName: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare categoryIcon: string | null;
 }
 
 export default Category;

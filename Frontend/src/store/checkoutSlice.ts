@@ -76,24 +76,27 @@ export const {
 export default orderSlice.reducer;
 
 export function orderItem(data: OrderData) {
-  return async function orderItemThunk(dispatch: AppDispatch) {
+  return async function orderItemThunk(
+    dispatch: AppDispatch
+  ): Promise<{ status: Status; khaltiUrl: string | null }> {
     dispatch(setStatus(Status.LOADING));
     try {
       const response = await APIAuthenticated.post("/order", data);
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
-        dispatch(setItems(response.data.data));
-        if (response.data.url) {
-          dispatch(setKhaltiUrl(response.data.url));
-        } else {
-          dispatch(setKhaltiUrl(null));
+        if (response.data.data) {
+          dispatch(setItems(response.data.data));
         }
-      } else {
-        dispatch(setStatus(Status.ERROR));
+        const khaltiUrl: string | null = response.data.url ?? null;
+        dispatch(setKhaltiUrl(khaltiUrl));
+        return { status: Status.SUCCESS, khaltiUrl };
       }
+      dispatch(setStatus(Status.ERROR));
+      return { status: Status.ERROR, khaltiUrl: null };
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
+      return { status: Status.ERROR, khaltiUrl: null };
     }
   };
 }
@@ -147,6 +150,21 @@ export function cancelMyOrder(id: string) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function verifyKhaltiPayment(pidx: string) {
+  return async function verifyKhaltiPaymentThunk(): Promise<boolean> {
+    try {
+      const response = await APIAuthenticated.post("/order/verify", { pidx });
+      return (
+        response.status === 200 &&
+        response.data.message === "Payment verified successfully"
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      return false;
     }
   };
 }

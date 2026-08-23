@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../../globals/components/navbar/Navbar.tsx";
 import { deleteCartItem, updateCartItem } from "../../store/cartSlice.ts";
 import { useAppDispatch, useAppSelector } from "../../store/hooks.ts";
+import { getProductImageUrl } from "../../globals/utils/image.ts";
 
 const Cart = () => {
   const { items } = useAppSelector((state) => state.carts);
@@ -11,6 +12,7 @@ const Cart = () => {
   };
 
   const handleUpdate = (productId: string, quantity: number) => {
+    if (quantity < 1) return;
     dispatch(updateCartItem(productId, quantity));
   };
 
@@ -24,10 +26,32 @@ const Cart = () => {
         0
       )
     : 0;
+  if (items.length === 0) {
+    return (
+      <>
+        <Navbar />
+        <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-6 text-center">
+          <h1 className="text-2xl font-bold text-gray-800">
+            Your cart is empty
+          </h1>
+          <p className="mt-2 text-gray-500">
+            Looks like you haven&apos;t added anything yet.
+          </p>
+          <Link
+            to="/"
+            className="mt-6 rounded-md bg-blue-500 px-6 py-2.5 font-medium text-white hover:bg-blue-600"
+          >
+            Continue Shopping
+          </Link>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />
-      <div className="h-screen bg-gray-100 pt-20">
+      <div className="min-h-screen bg-gray-100 pt-10 pb-16">
         <h1 className="mb-10 text-center text-2xl font-bold">Cart Items</h1>
         <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
           <div className="rounded-lg md:w-2/3">
@@ -39,13 +63,9 @@ const Cart = () => {
                     key={item.id || item.Product?.id || item.productId}
                   >
                     <img
-                      className="h-[100px]"
+                      className="h-[100px] w-[100px] rounded-md object-cover"
                       alt={item?.Product?.productName || "Product Image"}
-                      src={
-                        item?.Product?.productImageUrl
-                          ? `http://localhost:5000/uploads/${item?.Product?.productImageUrl}`
-                          : "/placeholder.png"
-                      }
+                      src={getProductImageUrl(item?.Product?.productImageUrl)}
                     />
 
                     <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
@@ -100,7 +120,11 @@ const Cart = () => {
                           <p className="text-sm">
                             Rs. {item?.Product?.productPrice}
                           </p>
-                          <div onClick={() => handleDelete(item?.Product?.id)}>
+                          <div
+                            className="cursor-pointer"
+                            title="Remove item"
+                            onClick={() => handleDelete(item?.Product?.id)}
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"

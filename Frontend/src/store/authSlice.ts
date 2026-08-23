@@ -1,13 +1,14 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { Status } from "../globals/types/types.ts";
-import { API } from "../http/index.ts";
-import type { ThunkDispatch } from "@reduxjs/toolkit";
-import type { RootState } from "./store";
+import { API, APIAuthenticated } from "../http/index.ts";
+import type { AppDispatch } from "./store";
 
 interface RegisterData {
   username: string;
   email: string;
   password: string;
+  firstName?: string;
+  lastName?: string;
 }
 interface LoginData {
   email: string;
@@ -15,10 +16,14 @@ interface LoginData {
 }
 
 interface User {
+  id?: string;
   username: string;
   email: string;
   password: string;
+  role?: string;
   token: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 interface AuthState {
@@ -47,10 +52,24 @@ const authSlice = createSlice({
     setToken(state: AuthState, action: PayloadAction<string>) {
       state.user.token = action.payload;
     },
+    setProfile(
+      state: AuthState,
+      action: PayloadAction<{
+        id: string;
+        username: string;
+        email: string;
+        role: string;
+        firstName?: string;
+        lastName?: string;
+      }>
+    ) {
+      state.user = { ...state.user, ...action.payload };
+    },
   },
 });
 
-export const { setUser, setStatus, resetStatus, setToken } = authSlice.actions;
+export const { setUser, setStatus, resetStatus, setToken, setProfile } =
+  authSlice.actions;
 export default authSlice.reducer;
 
 export function register(data: RegisterData) {
@@ -61,22 +80,24 @@ export function register(data: RegisterData) {
       const response = await API.post("/register", data);
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
-        console.log("Registration successful", response.data);
-      } else {
-        dispatch(setStatus(Status.ERROR));
+        return { success: true as const };
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
       dispatch(setStatus(Status.ERROR));
+      return { success: false as const, message: "Registration failed." };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      dispatch(setStatus(Status.ERROR));
+      const message =
+        error?.response?.data?.message ||
+        "Registration failed. Please try again.";
+      return { success: false as const, message };
     }
   };
 }
 
 
 export function login(data: LoginData) {
-  return async function loginThunk(
-    dispatch: ThunkDispatch<RootState, unknown, PayloadAction<string>>
-  ) {
+  return async function loginThunk(dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
     try {
       const response = await API.post("/login", data);
@@ -85,12 +106,32 @@ export function login(data: LoginData) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setToken(data));
         localStorage.setItem("token", data);
-      } else {
-        dispatch(setStatus(Status.ERROR));
+        await dispatch(fetchProfile());
+        return { success: true as const };
+      }
+      dispatch(setStatus(Status.ERROR));
+      return { success: false as const, message: "Login failed." };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      dispatch(setStatus(Status.ERROR));
+      const message =
+        error?.response?.data?.message ||
+        "Login failed. Please check your email and password.";
+      return { success: false as const, message };
+    }
+  };
+}
+
+export function fetchProfile() {
+  return async function fetchProfileThunk(dispatch: AppDispatch) {
+    try {
+      const response = await APIAuthenticated.get("/profile");
+      if (response.status === 200) {
+        dispatch(setProfile(response.data.data));
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      dispatch(setStatus(Status.ERROR));
+      // ignore - user may not be authenticated
     }
   };
 }

@@ -4,11 +4,14 @@ import dotenv from "dotenv";
 import path from "path";
 import Cart from "./models/Cart";
 import Category from "./models/Category";
+import Coupon from "./models/Coupon";
 import Order from "./models/Order";
 import OrderDetail from "./models/OrderDetails";
 import Payment from "./models/Payment";
 import Product from "./models/Product";
+import Review from "./models/Review";
 import User from "./models/User";
+import Wishlist from "./models/Wishlist";
 dotenv.config();
 
 const sequelize = new Sequelize({
@@ -21,18 +24,19 @@ const sequelize = new Sequelize({
   models: [path.join(__dirname, "models/")],
 });
 
-sequelize
+const dbReady: Promise<void> = sequelize
   .authenticate()
   .then(() => {
     console.log("connected");
+    return sequelize.sync({ force: false, alter: true });
+  })
+  .then(() => {
+    console.log("synced !!!");
   })
   .catch((err) => {
     console.log(err);
+    throw err;
   });
-
-sequelize.sync({ force: false,}).then(() => {
-  console.log("synced !!!");
-});
 
 //Relationships
 //User product relation
@@ -66,4 +70,18 @@ Order.belongsTo(Payment, { foreignKey: "paymentId" });
 //order user relation
 User.hasMany(Order, { foreignKey: "userId" });
 Order.belongsTo(User, { foreignKey: "userId" });
+
+//review relations
+User.hasMany(Review, { foreignKey: "userId" });
+Review.belongsTo(User, { foreignKey: "userId" });
+Product.hasMany(Review, { foreignKey: "productId" });
+Review.belongsTo(Product, { foreignKey: "productId" });
+
+//wishlist relations
+User.hasMany(Wishlist, { foreignKey: "userId" });
+Wishlist.belongsTo(User, { foreignKey: "userId" });
+Product.hasMany(Wishlist, { foreignKey: "productId" });
+Wishlist.belongsTo(Product, { foreignKey: "productId" });
+
 export default sequelize;
+export { dbReady };

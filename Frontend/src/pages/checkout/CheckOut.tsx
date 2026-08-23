@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
+import { type ChangeEvent, type FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Navbar from "../../globals/components/navbar/Navbar.tsx";
@@ -8,18 +8,27 @@ import {
   PaymentMethod,
 } from "../../globals/types/checkOutTypes.ts";
 import { Status } from "../../globals/types/types.ts";
+import { getProductImageUrl } from "../../globals/utils/image.ts";
+import { API } from "../../http/index.ts";
 import { clearCartItems } from "../../store/cartSlice.ts";
 import { orderItem } from "../../store/checkoutSlice.ts";
 import { useAppDispatch, useAppSelector } from "../../store/hooks.ts";
 
 const Checkout = () => {
   const { items } = useAppSelector((state) => state.carts);
-  const { khaltiUrl, status } = useAppSelector((state) => state.orders);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
     PaymentMethod.COD
   );
+  const [couponCode, setCouponCode] = useState("");
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
+  const [coupon, setCoupon] = useState<{
+    code: string;
+    discountPercent: number;
+    discountAmount: number;
+  } | null>(null);
   const [data, setData] = useState<OrderData>({
     phoneNumber: "",
     shippingAddress: "",
@@ -50,8 +59,37 @@ const Checkout = () => {
     (total, item) => item.Product.productPrice * item.quantity + total,
     0
   );
+  const shipping = 100;
+  const discountAmount = coupon?.discountAmount ?? 0;
+  const total = Math.max(subtotal + shipping - discountAmount, 0);
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode) return;
+    setApplyingCoupon(true);
+    try {
+      const response = await API.post("/coupon/apply", {
+        code: couponCode,
+        totalAmount: subtotal + shipping,
+      });
+      const result = response.data.data;
+      setCoupon({
+        code: result.code,
+        discountPercent: result.discountPercent,
+        discountAmount: result.discountAmount,
+      });
+      toast.success(`Coupon applied: ${result.discountPercent}% off`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setCoupon(null);
+      toast.error(error?.response?.data?.message ?? "Invalid coupon code");
+    } finally {
+      setApplyingCoupon(false);
+    }
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (items.length === 0) return;
     const itemDetails: ItemDetails[] = items.map((item) => {
       return {
         productId: item.Product.id,
@@ -62,26 +100,23 @@ const Checkout = () => {
     const orderData = {
       ...data,
       items: itemDetails,
-      totalAmount: subtotal + 100,
+      totalAmount: total,
     };
-    console.log(orderData);
-    await dispatch(orderItem(orderData));
-    // if(status === Status.SUCCESS){
-    //   alert("Order Placed successfully")
-    // }
+    setIsPlacingOrder(true);
+    const result = await dispatch(orderItem(orderData));
+    if (result.status === Status.SUCCESS) {
+      if (result.khaltiUrl) {
+        window.location.href = result.khaltiUrl;
+      } else {
+        dispatch(clearCartItems());
+        toast.success("Order placed successfully");
+        navigate("/");
+      }
+    } else {
+      setIsPlacingOrder(false);
+      toast.error("Failed to place order. Please try again.");
+    }
   };
-  useEffect(() => {
-    if (khaltiUrl) {
-      window.location.href = khaltiUrl;
-      return;
-    }
-    if (status === Status.SUCCESS) {
-      alert("Order Placed successfully");
-      dispatch(clearCartItems());
-      toast.success("Order placed successfully");
-      navigate("/");
-    }
-  }, [status, khaltiUrl, navigate, dispatch]);
 
   return (
     <>
@@ -103,19 +138,10 @@ const Checkout = () => {
                     key={item?.Product?.id}
                     className="flex flex-col rounded-lg bg-white sm:flex-row"
                   >
-                    {/* <img
-                      className="m-2 h-24 w-28 rounded-md border object-cover object-center"
-                      src="https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
-                      alt=""
-                    /> */}
                     <img
-                      className="h-[100px]"
+                      className="m-2 h-24 w-24 rounded-md border object-cover object-center"
                       alt={item?.Product?.productName || "Product Image"}
-                      src={
-                        item?.Product?.productImageUrl
-                          ? `http://localhost:5000/uploads/${item?.Product?.productImageUrl}`
-                          : "/placeholder.png"
-                      }
+                      src={getProductImageUrl(item?.Product?.productImageUrl)}
                     />
                     <div className="flex w-full flex-col px-4 py-4">
                       <span className="font-semibold">
@@ -203,9 +229,12 @@ const Checkout = () => {
               </label>
               <div className="relative">
                 <input
-                  type="number"
+                  type="tel"
                   id="phoneNumber"
                   name="phoneNumber"
+                  required
+                  pattern="[0-9]{10}"
+                  title="Enter a 10-digit phone number"
                   className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
                   onChange={handleChange}
                   placeholder="Your Phone Number"
@@ -224,6 +253,7 @@ const Checkout = () => {
                     type="text"
                     id="billing-address"
                     name="shippingAddress"
+                    required
                     className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
                     placeholder="Street Address"
                     onChange={handleChange}
@@ -238,6 +268,38 @@ const Checkout = () => {
                 </div>
               </div>
 
+              <div className="mt-6">
+                <label
+                  htmlFor="coupon"
+                  className="mb-2 block text-sm font-medium"
+                >
+                  Coupon Code
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    id="coupon"
+                    type="text"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    placeholder="Enter coupon code"
+                    className="w-full rounded-md border border-gray-200 px-4 py-2.5 text-sm shadow-sm outline-none focus:border-blue-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyCoupon}
+                    disabled={applyingCoupon || !couponCode}
+                    className="shrink-0 rounded-md bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                  >
+                    {applyingCoupon ? "Applying..." : "Apply"}
+                  </button>
+                </div>
+                {coupon && (
+                  <p className="mt-2 text-sm text-green-600">
+                    "{coupon.code}" applied — {coupon.discountPercent}% off
+                  </p>
+                )}
+              </div>
+
               <div className="mt-6 border-t border-b py-2">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-gray-900">Subtotal</p>
@@ -245,13 +307,23 @@ const Checkout = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-gray-900">Shipping</p>
-                  <p className="font-semibold text-gray-900">Rs 100</p>
+                  <p className="font-semibold text-gray-900">Rs {shipping}</p>
                 </div>
+                {discountAmount > 0 && (
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium text-green-600">
+                      Discount
+                    </p>
+                    <p className="font-semibold text-green-600">
+                      - Rs {discountAmount.toFixed(2)}
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="mt-6 flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-900">Total</p>
                 <p className="text-2xl font-semibold text-gray-900">
-                  Rs {subtotal + 100}
+                  Rs {total.toFixed(2)}
                 </p>
               </div>
             </div>
@@ -259,17 +331,18 @@ const Checkout = () => {
             {paymentMethod === PaymentMethod.Khalti ? (
               <button
                 type="submit"
-                className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white"
-                style={{ backgroundColor: "purple" }}
+                disabled={isPlacingOrder || items.length === 0}
+                className="mt-4 mb-8 w-full rounded-md bg-purple-700 px-6 py-3 font-medium text-white transition hover:bg-purple-800 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Pay With Khalti
+                {isPlacingOrder ? "Processing..." : "Pay With Khalti"}
               </button>
             ) : (
               <button
                 type="submit"
-                className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white"
+                disabled={isPlacingOrder || items.length === 0}
+                className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Place Order
+                {isPlacingOrder ? "Placing Order..." : "Place Order"}
               </button>
             )}
           </div>

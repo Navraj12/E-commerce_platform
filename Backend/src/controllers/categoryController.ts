@@ -15,18 +15,54 @@ class CategoryController {
     },
   ];
 
+  // One-time default icon assignment for categories that don't have one yet.
+  private getDefaultIconForCategory(categoryName: string): string {
+    const name = (categoryName || "").toLowerCase();
+    if (name.includes("electronic")) return "💻";
+    if (name.includes("grocery") || name.includes("food")) return "🛒";
+    if (name.includes("fashion") || name.includes("cloth")) return "👕";
+    if (name.includes("beauty")) return "💄";
+    if (name.includes("home") || name.includes("furniture")) return "🛋️";
+    if (name.includes("sport")) return "⚽";
+    if (name.includes("book")) return "📚";
+    if (name.includes("toy")) return "🧸";
+    if (name.includes("health")) return "💊";
+    return "🏷️";
+  }
+
   async seedCategory(): Promise<void> {
     const datas = await Category.findAll();
     if (datas.length === 0) {
-      const data = await Category.bulkCreate(this.categoryData);
+      await Category.bulkCreate(
+        this.categoryData.map((c) => ({
+          ...c,
+          categoryIcon: this.getDefaultIconForCategory(c.categoryName),
+        }))
+      );
       console.log("Categories seeded successfully");
     } else {
       console.log("Categories already seeded");
     }
+
+    // Backfill: assign a default icon to any existing category missing one.
+    // Runs once per row (only updates rows where categoryIcon IS NULL).
+    const categoriesMissingIcon = await Category.findAll({
+      where: { categoryIcon: null },
+    });
+    for (const category of categoriesMissingIcon) {
+      await category.update({
+        categoryIcon: this.getDefaultIconForCategory(category.categoryName),
+      });
+    }
+    if (categoriesMissingIcon.length > 0) {
+      console.log(
+        `Backfilled categoryIcon for ${categoriesMissingIcon.length} categories`
+      );
+    }
   }
 
   async addCategory(req: AuthRequest, res: Response): Promise<void> {
-    const { categoryName } = req.body;
+    const { categoryName, categoryIcon } = req.body;
     if (!categoryName) {
       res.status(400).json({
         message: "Please provide categoryName",
@@ -35,6 +71,7 @@ class CategoryController {
     }
     await Category.create({
       categoryName,
+      categoryIcon: categoryIcon ?? this.getDefaultIconForCategory(categoryName),
     });
 
     res.status(200).json({
@@ -75,9 +112,9 @@ class CategoryController {
 
   async UpdateCategory(req: AuthRequest, res: Response): Promise<void> {
     const { id } = req.body;
-    const { categoryName } = req.body;
+    const { categoryName, categoryIcon } = req.body;
     await Category.update(
-      { categoryName },
+      { categoryName, ...(categoryIcon !== undefined ? { categoryIcon } : {}) },
       {
         where: {
           id,

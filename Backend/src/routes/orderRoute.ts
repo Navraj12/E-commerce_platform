@@ -52,7 +52,7 @@ router
   .patch(
     authMiddleware.isAuthenticated,
     authMiddleware.restrictTo(Role.Admin) as RequestHandler,
-    errorHandler(orderController.changePaymentStatus)
+    errorHandler(orderController.changeOrderStatus)
   )
   .delete(
     authMiddleware.isAuthenticated,
