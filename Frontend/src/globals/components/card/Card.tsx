@@ -34,6 +34,11 @@ const Card: React.FC<CardProps> = ({ data, badge, showSoldBy = false, soldByLabe
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.info("Please log in to add items to your cart");
+      return;
+    }
     dispatch(addToCart(data.id));
   };
 

@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import AdminLayout from "./AdminLayout.tsx";
 import { OrderStatus } from "../../globals/types/checkOutTypes.ts";
-import { fetchAllOrders, updateOrderStatus } from "../../store/adminSlice.ts";
+import {
+  fetchAllOrders,
+  updateOrderStatus,
+  updatePaymentStatus,
+} from "../../store/adminSlice.ts";
 import { useAppDispatch, useAppSelector } from "../../store/hooks.ts";
 
 const statusOptions = [
@@ -12,6 +16,8 @@ const statusOptions = [
   OrderStatus.Delivered,
   OrderStatus.Cancelled,
 ];
+
+const paymentStatusOptions = ["pending", "paid", "unpaid"];
 
 const statusBadgeClasses = (status: string) => {
   switch (status) {
@@ -45,6 +51,18 @@ const AdminOrders = () => {
       toast.success("Order status updated");
     } else {
       toast.error("Failed to update order status");
+    }
+  };
+
+  const handlePaymentStatusChange = async (
+    orderId: string,
+    paymentStatus: string
+  ) => {
+    const success = await dispatch(updatePaymentStatus(orderId, paymentStatus));
+    if (success) {
+      toast.success("Payment status updated");
+    } else {
+      toast.error("Failed to update payment status");
     }
   };
 
@@ -92,7 +110,20 @@ const AdminOrders = () => {
                   </td>
                   <td className="px-5 py-3">Rs. {order.totalAmount}</td>
                   <td className="px-5 py-3 capitalize">
-                    {order.Payment?.paymentMethod} / {order.Payment?.paymentStatus}
+                    <div className="mb-1">{order.Payment?.paymentMethod}</div>
+                    <select
+                      value={order.Payment?.paymentStatus}
+                      onChange={(e) =>
+                        handlePaymentStatusChange(order.id, e.target.value)
+                      }
+                      className="rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-xs capitalize outline-none dark:border-slate-700 dark:bg-slate-800"
+                    >
+                      {paymentStatusOptions.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
                   </td>
                   <td className="px-5 py-3">
                     <select

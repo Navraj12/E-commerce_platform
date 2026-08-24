@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import Navbar from "../../globals/components/navbar/Navbar.tsx";
 import { deleteCartItem, updateCartItem } from "../../store/cartSlice.ts";
 import { useAppDispatch, useAppSelector } from "../../store/hooks.ts";
@@ -7,13 +8,19 @@ import { getProductImageUrl } from "../../globals/utils/image.ts";
 const Cart = () => {
   const { items } = useAppSelector((state) => state.carts);
   const dispatch = useAppDispatch();
-  const handleDelete = (productId: string) => {
-    dispatch(deleteCartItem(productId));
+  const handleDelete = async (productId: string) => {
+    const success = await dispatch(deleteCartItem(productId));
+    if (!success) {
+      toast.error("Failed to remove item. Please try again.");
+    }
   };
 
-  const handleUpdate = (productId: string, quantity: number) => {
-    if (quantity < 1) return;
-    dispatch(updateCartItem(productId, quantity));
+  const handleUpdate = async (productId: string, quantity: number) => {
+    if (!Number.isFinite(quantity) || quantity < 1) return;
+    const success = await dispatch(updateCartItem(productId, quantity));
+    if (!success) {
+      toast.error("Failed to update quantity. Please try again.");
+    }
   };
 
   const totalItemInCarts = Array.isArray(items)

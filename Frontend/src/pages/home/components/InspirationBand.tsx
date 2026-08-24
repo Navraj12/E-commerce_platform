@@ -36,23 +36,30 @@ const InspirationBand = () => {
     return map;
   }, [product]);
 
-  // Same ranking Hero uses (most-stocked first), but this section takes the
-  // NEXT 3 categories (indices 3-5) instead of the top 3, so it never
-  // repeats what Hero already shows.
-  const nextCategories = useMemo(() => {
+  // Same ranking Hero uses (most-stocked first). When there are more than 3
+  // stocked categories, show the NEXT ones (beyond what Hero already shows);
+  // otherwise fall back to reusing the same top categories with a different
+  // product/angle so the section still renders instead of going empty.
+  const rankedCategories = useMemo(() => {
     return categories
       .map((cat) => ({
         cat,
         items: productsByCategory.get(cat.id) ?? [],
       }))
       .filter((entry) => entry.items.length > 0)
-      .sort((a, b) => b.items.length - a.items.length)
-      .slice(3, 6);
+      .sort((a, b) => b.items.length - a.items.length);
   }, [categories, productsByCategory]);
+
+  const nextCategories = useMemo(() => {
+    const beyondHero = rankedCategories.slice(3, 6);
+    return beyondHero.length > 0 ? beyondHero : rankedCategories.slice(0, 3);
+  }, [rankedCategories]);
 
   const inspirationCards: InspirationCard[] = useMemo(() => {
     return nextCategories.map((entry) => {
-      const bestProduct = entry.items[0];
+      // Use the second-best product (if any) so a reused category still
+      // shows a different image/angle than Hero's card for it.
+      const bestProduct = entry.items[1] ?? entry.items[0];
       // Prefer a real discount if any product in the category has one.
       const discounted = entry.items.find(
         (p) => (p.discountPercent ?? 0) > 0
@@ -72,9 +79,9 @@ const InspirationBand = () => {
     });
   }, [nextCategories]);
 
-  // Graceful fallback: if there aren't at least 3 categories with stock,
-  // skip rendering this section rather than showing broken/empty cards.
-  if (inspirationCards.length < 3) {
+  // Graceful fallback: if there's no stocked category at all, skip
+  // rendering this section rather than showing broken/empty cards.
+  if (inspirationCards.length === 0) {
     return null;
   }
 

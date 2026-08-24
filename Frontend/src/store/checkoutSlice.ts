@@ -138,18 +138,23 @@ export function fetchMyOrderDetails(id: string) {
 }
 
 export function cancelMyOrder(id: string) {
-  return async function cancelMyOrderThunk(dispatch: AppDispatch) {
+  return async function cancelMyOrderThunk(
+    dispatch: AppDispatch
+  ): Promise<{ status: Status }> {
     dispatch(setStatus(Status.LOADING));
     try {
       const response = await APIAuthenticated.patch("/order/customer/" + id);
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
+        return { status: Status.SUCCESS };
       } else {
         dispatch(setStatus(Status.ERROR));
+        return { status: Status.ERROR };
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
+      return { status: Status.ERROR };
     }
   };
 }

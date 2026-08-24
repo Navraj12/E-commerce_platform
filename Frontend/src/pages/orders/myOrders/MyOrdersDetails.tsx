@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import Navbar from "../../../globals/components/navbar/Navbar.tsx";
 import { OrderStatus } from "../../../globals/types/checkOutTypes.ts";
 import { getProductImageUrl } from "../../../globals/utils/image.ts";
@@ -8,6 +9,7 @@ import {
   fetchMyOrderDetails,
 } from "../../../store/checkoutSlice.ts";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
+import { Status } from "../../../globals/types/types.ts";
 
 const STATUS_STEPS = [
   { key: OrderStatus.Pending, label: "Pending" },
@@ -70,6 +72,8 @@ const OrderStatusStepper = ({ status }: { status: OrderStatus }) => {
 const MyOrdersDetails = () => {
   const { id } = useParams();
   const { orderDetails } = useAppSelector((state) => state.orders);
+  const { user } = useAppSelector((state) => state.auth);
+  const token = localStorage.getItem("token");
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (id) {
@@ -79,11 +83,19 @@ const MyOrdersDetails = () => {
 
   const handleCancelOrder = async () => {
     if (id) {
-      await dispatch(cancelMyOrder(id));
+      const resultAction = await dispatch(cancelMyOrder(id));
+      if (resultAction?.status === Status.ERROR) {
+        toast.error("Failed to cancel order. Please try again.");
+        return;
+      }
+      toast.success("Order cancelled successfully");
       await dispatch(fetchMyOrderDetails(id));
-      // navigate("/myorders")
     }
   };
+
+  if (!token && !user?.token) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <>

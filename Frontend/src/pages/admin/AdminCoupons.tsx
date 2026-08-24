@@ -27,6 +27,14 @@ const AdminCoupons = () => {
       toast.error("Please fill in all fields");
       return;
     }
+    if (Number(form.discountPercent) <= 0 || Number(form.discountPercent) > 100) {
+      toast.error("Discount percent must be between 1 and 100");
+      return;
+    }
+    if (new Date(form.expiryDate) < new Date(new Date().toDateString())) {
+      toast.error("Expiry date cannot be in the past");
+      return;
+    }
     setSubmitting(true);
     const success = await dispatch(
       createCoupon({

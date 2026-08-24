@@ -91,9 +91,13 @@ const SingleProduct = () => {
   }, [dispatch, id]);
 
   const handleAddToCart = () => {
-    if (id && singleProduct) {
-      dispatch(addToCart(id));
+    if (!id || !singleProduct) return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.info("Please log in to add items to your cart");
+      return;
     }
+    dispatch(addToCart(id));
   };
 
   const handleToggleWishlist = () => {

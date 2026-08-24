@@ -46,6 +46,23 @@ const adminSlice = createSlice({
         u.id === action.payload.id ? { ...u, role: action.payload.role } : u
       );
     },
+    updatePaymentStatusInList(
+      state: AdminState,
+      action: PayloadAction<{ orderId: string; paymentStatus: string }>
+    ) {
+      state.orders = state.orders.map((order) =>
+        order.id === action.payload.orderId
+          ? {
+              ...order,
+              Payment: {
+                ...order.Payment,
+                paymentStatus: action.payload
+                  .paymentStatus as MyOrderData["Payment"]["paymentStatus"],
+              },
+            }
+          : order
+      );
+    },
   },
 });
 
@@ -56,6 +73,7 @@ export const {
   setUsers,
   updateOrderStatusInList,
   updateUserRoleInList,
+  updatePaymentStatusInList,
 } = adminSlice.actions;
 export default adminSlice.reducer;
 
@@ -105,6 +123,27 @@ export function updateOrderStatus(orderId: string, orderStatus: OrderStatus) {
       });
       if (response.status === 200) {
         dispatch(updateOrderStatusInList({ orderId, orderStatus }));
+        return true;
+      }
+      return false;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      return false;
+    }
+  };
+}
+
+export function updatePaymentStatus(orderId: string, paymentStatus: string) {
+  return async function updatePaymentStatusThunk(
+    dispatch: AppDispatch
+  ): Promise<boolean> {
+    try {
+      const response = await APIAuthenticated.patch(
+        `/order/admin/payment/${orderId}`,
+        { paymentStatus }
+      );
+      if (response.status === 200) {
+        dispatch(updatePaymentStatusInList({ orderId, paymentStatus }));
         return true;
       }
       return false;

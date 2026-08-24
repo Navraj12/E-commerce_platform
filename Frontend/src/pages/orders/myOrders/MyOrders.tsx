@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Navbar from "../../../globals/components/navbar/Navbar.tsx";
 import { OrderStatus } from "../../../globals/types/checkOutTypes.ts";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
@@ -27,6 +27,8 @@ const statusBadgeClasses = (status: OrderStatus | string) => {
 const MyOrders = () => {
   const dispatch = useAppDispatch();
   const { myOrders } = useAppSelector((state) => state.orders);
+  const { user } = useAppSelector((state) => state.auth);
+  const token = localStorage.getItem("token");
   const [selectedItem, setSelectedItem] = useState<OrderStatus>(
     OrderStatus.All
   );
@@ -62,6 +64,11 @@ const MyOrders = () => {
       socket.off("statusUpdated", handleStatusUpdated);
     };
   }, [dispatch]);
+
+  if (!token && !user?.token) {
+    return <Navigate to="/login" replace />;
+  }
+
   return (
     <>
       <Navbar />

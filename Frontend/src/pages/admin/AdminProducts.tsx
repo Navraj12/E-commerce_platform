@@ -87,6 +87,14 @@ const AdminProducts = () => {
       toast.error("Please fill in all required fields");
       return;
     }
+    if (Number(form.productPrice) <= 0) {
+      toast.error("Price must be a positive number");
+      return;
+    }
+    if (Number(form.productTotalStockQty) < 0) {
+      toast.error("Stock quantity cannot be negative");
+      return;
+    }
     if (
       form.originalPrice &&
       Number(form.originalPrice) <= Number(form.productPrice)
@@ -175,7 +183,7 @@ const AdminProducts = () => {
             {filteredProducts.length === 0 && (
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={7}
                   className="px-5 py-8 text-center text-slate-500 dark:text-slate-400"
                 >
                   No products found.

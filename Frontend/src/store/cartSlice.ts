@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import { type CartItem, type CartState } from "../globals/types/cartTypes.ts";
 import { Status } from "../globals/types/types.ts";
 import { APIAuthenticated } from "../http/index.ts";
@@ -84,13 +85,16 @@ export function addToCart(productId: string) {
       });
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
+        toast.success("Product is added in cart");
         await fetchCartItems()(dispatch);
       } else {
         dispatch(setStatus(Status.ERROR));
+        toast.error("Could not add product to cart");
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
+      toast.error("Could not add product to cart");
     }
   };
 }
@@ -115,7 +119,9 @@ export function fetchCartItems() {
 }
 
 export function deleteCartItem(productId: string) {
-  return async function deleteCartItemThunk(dispatch: AppDispatch) {
+  return async function deleteCartItemThunk(
+    dispatch: AppDispatch
+  ): Promise<boolean> {
     dispatch(setStatus(Status.LOADING));
     try {
       const response = await APIAuthenticated.delete(
@@ -124,18 +130,23 @@ export function deleteCartItem(productId: string) {
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setDeleteItem({ productId }));
+        return true;
       } else {
         dispatch(setStatus(Status.ERROR));
+        return false;
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
+      return false;
     }
   };
 }
 
 export function updateCartItem(productId: string, quantity: number) {
-  return async function updateCartItemThunk(dispatch: AppDispatch) {
+  return async function updateCartItemThunk(
+    dispatch: AppDispatch
+  ): Promise<boolean> {
     dispatch(setStatus(Status.LOADING));
     try {
       const response = await APIAuthenticated.patch(
@@ -147,12 +158,15 @@ export function updateCartItem(productId: string, quantity: number) {
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setUpdateItem({ productId, quantity }));
+        return true;
       } else {
         dispatch(setStatus(Status.ERROR));
+        return false;
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
+      return false;
     }
   };
 }

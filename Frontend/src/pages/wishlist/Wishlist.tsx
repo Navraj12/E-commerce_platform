@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import Navbar from "../../globals/components/navbar/Navbar.tsx";
 import Footer from "../../globals/components/footer/Footer.tsx";
 import { getProductImageUrl } from "../../globals/utils/image.ts";
@@ -15,6 +16,22 @@ const Wishlist = () => {
   useEffect(() => {
     dispatch(fetchWishlist());
   }, [dispatch]);
+
+  const handleAddToCart = (productId: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.info("Please log in to add items to your cart");
+      return;
+    }
+    dispatch(addToCart(productId));
+  };
+
+  const handleRemove = async (productId: string) => {
+    const success = await dispatch(removeFromWishlist(productId));
+    if (!success) {
+      toast.error("Failed to remove item. Please try again.");
+    }
+  };
 
   return (
     <>
@@ -77,13 +94,13 @@ const Wishlist = () => {
                   </div>
                   <div className="mt-4 flex gap-2">
                     <button
-                      onClick={() => dispatch(addToCart(item.productId))}
+                      onClick={() => handleAddToCart(item.productId)}
                       className="flex-1 rounded-md bg-blue-700 px-3 py-2 text-sm font-medium text-white hover:bg-blue-800"
                     >
                       Add to Cart
                     </button>
                     <button
-                      onClick={() => dispatch(removeFromWishlist(item.productId))}
+                      onClick={() => handleRemove(item.productId)}
                       className="rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                     >
                       Remove

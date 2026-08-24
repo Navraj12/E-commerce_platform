@@ -63,15 +63,20 @@ export function addToWishlist(productId: string) {
 }
 
 export function removeFromWishlist(productId: string) {
-  return async function removeFromWishlistThunk(dispatch: AppDispatch) {
+  return async function removeFromWishlistThunk(
+    dispatch: AppDispatch
+  ): Promise<boolean> {
     try {
       const response = await APIAuthenticated.delete(`/wishlist/${productId}`);
       if (response.status === 200) {
         dispatch(removeItem(productId));
+        return true;
       }
+      return false;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
+      return false;
     }
   };
 }

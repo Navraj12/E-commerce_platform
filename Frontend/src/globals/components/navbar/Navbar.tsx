@@ -47,8 +47,17 @@ const Navbar = () => {
     navigate(`/?search=${encodeURIComponent(searchTerm)}`);
   };
 
+  const activeCategoryId = searchParams.get("category");
+
   const goToCategory = (categoryId: string) => {
     navigate(`/?category=${encodeURIComponent(categoryId)}`);
+    // Give visible feedback that the click did something: scroll the
+    // filtered results into view (only present on the home page).
+    window.setTimeout(() => {
+      document
+        .getElementById("top-products")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
   };
 
   const linkClasses =
@@ -220,7 +229,11 @@ const Navbar = () => {
                 <button
                   key={cat.id}
                   onClick={() => goToCategory(cat.id)}
-                  className="flex-none whitespace-nowrap text-gray-600 transition hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
+                  className={`flex-none whitespace-nowrap transition hover:text-blue-600 dark:hover:text-white ${
+                    activeCategoryId === cat.id
+                      ? "font-semibold text-blue-600 dark:text-white"
+                      : "text-gray-600 dark:text-gray-400"
+                  }`}
                 >
                   {cat.categoryName}
                 </button>
@@ -232,21 +245,36 @@ const Navbar = () => {
         {/* Row 3: circular category icon row - horizontally scrollable, never wraps */}
         {categories.length > 0 && (
           <div className="flex flex-nowrap items-start gap-5 overflow-x-auto border-t border-gray-100 px-1 py-3 snap-x scrollbar-hide dark:border-gray-700">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => goToCategory(cat.id)}
-                className="flex flex-none snap-start flex-col items-center gap-1 text-center"
-                title={cat.categoryName}
-              >
-                <span className="flex h-14 w-14 flex-none items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-2xl shadow-sm transition hover:border-blue-400 hover:bg-blue-50 dark:border-gray-600 dark:bg-gray-700">
-                  {cat.categoryIcon || "🏷️"}
-                </span>
-                <span className="w-16 truncate text-[11px] font-medium text-gray-500 dark:text-gray-400">
-                  {cat.categoryName}
-                </span>
-              </button>
-            ))}
+            {categories.map((cat) => {
+              const isActive = activeCategoryId === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => goToCategory(cat.id)}
+                  className="flex flex-none snap-start flex-col items-center gap-1 text-center"
+                  title={cat.categoryName}
+                >
+                  <span
+                    className={`flex h-14 w-14 flex-none items-center justify-center rounded-full border text-2xl shadow-sm transition hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 ${
+                      isActive
+                        ? "border-blue-500 bg-blue-50 ring-2 ring-blue-400 dark:bg-gray-700"
+                        : "border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-700"
+                    }`}
+                  >
+                    {cat.categoryIcon || "🏷️"}
+                  </span>
+                  <span
+                    className={`w-16 truncate text-[11px] ${
+                      isActive
+                        ? "font-semibold text-blue-600 dark:text-blue-400"
+                        : "font-medium text-gray-500 dark:text-gray-400"
+                    }`}
+                  >
+                    {cat.categoryName}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
