@@ -1,10 +1,10 @@
 import { useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../../globals/components/navbar/Navbar.tsx";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
+import type { Product } from "../../../globals/types/productTypes.ts";
 import { getProductImageUrl } from "../../../globals/utils/image.ts";
 import { fetchCategories } from "../../../store/categorySlice.ts";
-import type { Product } from "../../../globals/types/productTypes.ts";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
 
 interface PromoCard {
   categoryId?: string;
@@ -60,7 +60,7 @@ const Hero = () => {
         return {
           categoryId: entry.cat.id,
           badge: "New in",
-          headline: `Welcome to Online Karobar — ${entry.cat.categoryName}`,
+          headline: `Welcome to Online Karobar - ${entry.cat.categoryName}`,
           copy: "Everyday essentials, electronics and more — delivered to your door.",
           ctaText: "Shop Now",
           ctaLink: `/?category=${encodeURIComponent(entry.cat.id)}`,
@@ -69,7 +69,8 @@ const Hero = () => {
       }
       return {
         categoryId: entry.cat.id,
-        badge: entry.items.length > 1 ? `${entry.items.length}+ picks` : undefined,
+        badge:
+          entry.items.length > 1 ? `${entry.items.length}+ picks` : undefined,
         headline: entry.cat.categoryName,
         copy: `Top-rated ${entry.cat.categoryName.toLowerCase()} picked for this season, in stock and ready to ship.`,
         ctaText: `Shop ${entry.cat.categoryName}`,
@@ -158,7 +159,9 @@ const Hero = () => {
         {/* Dark banner strip: keeps "Track Orders" CTA and shows live product thumbnails */}
         <div className="mt-6 flex items-center gap-4 rounded-xl bg-blue-900 px-4 py-3 text-white">
           <div className="flex-none">
-            <p className="text-sm font-semibold">Free delivery on your first order</p>
+            <p className="text-sm font-semibold">
+              Free delivery on your first order
+            </p>
             <button
               onClick={() => navigate("/myorders")}
               className="text-xs font-medium text-blue-200 underline underline-offset-2 hover:text-white"
@@ -188,7 +191,8 @@ const Hero = () => {
             type="button"
             aria-label="Scroll thumbnails"
             onClick={(e) => {
-              const row = e.currentTarget.previousElementSibling as HTMLElement | null;
+              const row = e.currentTarget
+                .previousElementSibling as HTMLElement | null;
               row?.scrollBy({ left: 200, behavior: "smooth" });
             }}
             className="flex-none rounded-full bg-white/10 p-2 transition hover:bg-white/20"
